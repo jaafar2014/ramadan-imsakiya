@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>إمساكية رمضان 2026م الإلكترونية</title>
+<title>إمساكية رمضان الذكية</title>
 
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
 
@@ -11,26 +11,41 @@
 body{
   margin:0;
   font-family:'Cairo',sans-serif;
-  background:#1b0f33;
+  background:#2f2154;
   color:#fff;
 }
-.container{max-width:430px;margin:auto;padding-bottom:40px}
+.container{
+  max-width:430px;
+  margin:auto;
+  padding:20px;
+}
 
 /* ===== Header ===== */
-.header-bg{
-  background:linear-gradient(180deg,#ff4fa1,#7b3cff,#1b0f33);
-  padding:35px 20px 85px;
+.header{
   text-align:center;
-  position:relative;
+  margin-bottom:20px;
 }
+.header h1{
+  color:#f6c77a;
+  margin:0;
+}
+.header p{
+  margin:5px 0 0;
+  opacity:.85;
+}
+
+/* ===== Profile ===== */
 .profile{
-  position:absolute;
-  left:50%;
-  bottom:-55px;
-  transform:translateX(-50%);
+  margin:25px auto 10px;
+  width:140px;
+  height:140px;
+  border-radius:50%;
+  padding:5px;
+  background:linear-gradient(135deg,#f6c77a,#ff9f6e);
 }
 .profile img{
-  width:110px;height:110px;
+  width:100%;
+  height:100%;
   border-radius:50%;
   object-fit:cover;
   background:#ccc;
@@ -38,88 +53,77 @@ body{
 
 /* ===== Memorial ===== */
 .memorial{
-  margin-top:70px;
   text-align:center;
+  margin:10px 0 15px;
 }
-.memorial small{opacity:.85}
+.memorial small{
+  display:block;
+  opacity:.85;
+}
 .memorial strong{
   display:block;
-  color:#ff4d4d;
+  color:#f6c77a;
   font-size:20px;
-  margin-top:6px;
+  margin-top:5px;
 }
 
-/* ===== Title ===== */
-.imsakiya-title{
-  text-align:center;
-  font-size:18px;
-  font-weight:700;
-  margin-top:15px;
-}
-.ramadan-day{
-  text-align:center;
-  font-size:22px;
-  font-weight:700;
-  color:#ffb703;
-  margin:8px 0 15px;
-}
-
-/* ===== Calendar ===== */
-.calendar{
-  display:grid;
-  grid-template-columns:repeat(5,1fr);
-  gap:8px;
-  padding:15px;
-}
-.day{
-  background:#5a3fc0;
-  border-radius:12px;
-  padding:12px 0;
-  text-align:center;
-  cursor:pointer;
-}
-.day.active{
-  background:#ff9f6e;
-  color:#000;
-  font-weight:700;
-}
-
-/* ===== Modal ===== */
-.modal{
-  position:fixed;
-  left:0;right:0;bottom:-100%;
-  background:#4c2db3;
-  border-radius:22px 22px 0 0;
-  padding:20px;
-  transition:.3s;
-  z-index:999;
-  max-height:80%;
-  overflow:auto;
-}
-.modal.active{bottom:0}
-.modal h3{
-  text-align:center;
-  margin-top:0;
-  color:#ffb703;
-}
-.modal .close{
-  text-align:center;
-  font-size:20px;
-  cursor:pointer;
-  margin-bottom:10px;
-}
-.modal-section{
-  background:#5a3fc0;
+/* ===== Day Box ===== */
+.day-box{
+  background:#1f163d;
   border-radius:14px;
   padding:12px;
-  margin-bottom:10px;
-  font-size:14px;
+  text-align:center;
+  margin-bottom:15px;
 }
-.modal-section span{
-  color:#ffb703;
-  font-weight:700;
+
+/* ===== Select ===== */
+select{
+  width:100%;
+  padding:14px;
+  border-radius:14px;
+  border:none;
+  margin-bottom:12px;
+  font-family:'Cairo';
+  font-size:15px;
+}
+
+/* ===== Times ===== */
+.times{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:10px;
+  margin-bottom:10px;
+}
+.time{
+  background:#1f163d;
+  border-radius:14px;
+  padding:14px 10px;
+  text-align:center;
+}
+.time span{
   display:block;
-  margin-bottom:5px;
+  font-size:13px;
+  opacity:.8;
+}
+.time strong{
+  display:block;
+  color:#f6c77a;
+  font-size:18px;
+  margin-top:5px;
+}
+.times.single{
+  grid-template-columns:1fr;
+}
+
+/* ===== Countdown ===== */
+.countdown{
+  margin-top:15px;
+  background:linear-gradient(135deg,#ff9f6e,#f6c77a);
+  color:#000;
+  padding:14px;
+  border-radius:18px;
+  text-align:center;
+  font-weight:700;
 }
 </style>
 </head>
@@ -128,173 +132,55 @@ body{
 
 <div class="container">
 
-  <div class="header-bg">
-    <div class="profile">
-      <img src="photo.jpg">
-    </div>
+  <div class="header">
+    <h1>إمساكية رمضان الذكية</h1>
+    <p>رمضان 1447 هـ – 2026 م</p>
+  </div>
+
+  <div class="profile">
+    <img src="photo.jpg">
   </div>
 
   <div class="memorial">
     <small>الفاتحة على روح الشهيد</small>
-    <strong>المرحوم أمان عبدالجبار عبدالرضا</strong>
+    <strong>أمان عبدالجبار عبدالرضا</strong>
   </div>
 
-  <div class="imsakiya-title">
-    إمساكية رمضان 2026م الإلكترونية
+  <div class="day-box" id="dayBox">
+    اليوم: الأربعاء – 1 رمضان | الموافق: 18/2/2026
   </div>
 
-  <div class="ramadan-day" id="ramadanDay">
-    الأربعاء – 1 رمضان
+  <select>
+    <option>التوقيت الشيعي (الجعفري)</option>
+    <option>التوقيت السني</option>
+  </select>
+
+  <select>
+    <option>البصرة</option>
+    <option>بغداد</option>
+    <option>النجف</option>
+    <option>كربلاء</option>
+  </select>
+
+  <div class="times">
+    <div class="time"><span>الإمساك</span><strong>05:05</strong></div>
+    <div class="time"><span>الفجر</span><strong>05:15</strong></div>
+    <div class="time"><span>الشروق</span><strong>06:27</strong></div>
+
+    <div class="time"><span>الظهر</span><strong>12:03</strong></div>
+    <div class="time"><span>العصر</span><strong>15:13</strong></div>
+    <div class="time"><span>المغرب</span><strong>17:54</strong></div>
   </div>
 
-  <div class="calendar" id="calendar"></div>
+  <div class="times single">
+    <div class="time"><span>العشاء</span><strong>18:41</strong></div>
+  </div>
+
+  <div class="countdown">
+    الوقت المتبقي للإفطار: 02:41:17
+  </div>
 
 </div>
-
-<!-- Modal -->
-<div class="modal" id="modal">
-  <div class="close" onclick="closeModal()">⬇️</div>
-  <h3 id="modalTitle"></h3>
-
-  <div class="modal-section">
-    <span>التاريخ الميلادي</span>
-    <div id="modalDate"></div>
-  </div>
-
-  <div class="modal-section">
-    <span>دعاء اليوم</span>
-    <div id="modalDua"></div>
-  </div>
-
-  <div class="modal-section">
-    <span>الأعمال المستحبة</span>
-    <div id="modalActions"></div>
-  </div>
-</div>
-
-<script>
-/* ===== بيانات الأيام ===== */
-const dayNames=["الأحد","الاثنين","الثلاثاء","الأربعاء","الخميس","الجمعة","السبت"];
-
-const duas=[
-"اللهم اجعل صيامي فيه صيام الصائمين...",
-"اللهم قربني فيه إلى مرضاتك...",
-"اللهم ارزقني فيه رحمة الأيتام...",
-"اللهم طهرني فيه من الدنس...",
-"اللهم اجعلني فيه من المتوكلين...",
-"اللهم ارزقني فيه حسن التوكل...",
-"اللهم لا تخذلني فيه...",
-"اللهم وفقني فيه لطاعتك...",
-"اللهم اجعلني فيه من المستغفرين...",
-"اللهم افتح لي فيه أبواب فضلك...",
-"اللهم اجعلني فيه من المتقين...",
-"اللهم زيني فيه بالستر والعفاف...",
-"اللهم طهر قلبي من الظلمات...",
-"اللهم ارزقني فيه الخشوع...",
-"اللهم اجعلني فيه من المقبولين...",
-"اللهم وفقني فيه لقيام الليل...",
-"اللهم ارحم ضعفي...",
-"اللهم اغفر لي ولوالدي...",
-"اللهم تقبل صيامي...",
-"اللهم اجعلني من عتقائك...",
-"اللهم ارزقني حسن الخاتمة...",
-"اللهم قربني إليك...",
-"اللهم لا تحرمني فضلك...",
-"اللهم اجعل عملي خالصًا...",
-"اللهم ارزقني رضاك...",
-"اللهم اكتبني من المقبولين...",
-"اللهم اجعل هذا الشهر فرجًا...",
-"اللهم اختم لنا بالمغفرة...",
-"اللهم تقبل منا...",
-"اللهم بلغنا ليلة القدر..."
-];
-
-const actions=[
-"الغسل، قراءة دعاء اليوم، قراءة جزء من القرآن",
-"صلاة ركعتين، الاستغفار 70 مرة",
-"الصدقة ولو بالقليل، صلة الرحم",
-"قراءة سورة القدر 10 مرات",
-"قراءة دعاء الافتتاح",
-"زيارة الإمام الحسين (ع) عن بُعد",
-"الإكثار من الصلاة على محمد وآل محمد",
-"قراءة سورة يس",
-"الدعاء للمؤمنين والمؤمنات",
-"صلاة الليل",
-"قراءة سورة الإخلاص 100 مرة",
-"الاستغفار بعد كل صلاة",
-"قراءة دعاء كميل",
-"صلاة ركعتين قربةً إلى الله",
-"الإكثار من الذكر",
-"قراءة القرآن بتدبر",
-"الدعاء للوالدين",
-"صلة الرحم",
-"قراءة سورة الفتح",
-"الإكثار من الصدقة",
-"الدعاء بتعجيل الفرج",
-"قراءة دعاء العهد",
-"قراءة سورة الدخان",
-"الإكثار من الاستغفار",
-"الدعاء عند الإفطار",
-"قراءة سورة الرحمن",
-"التحضير لليالي القدر",
-"قيام الليل",
-"الدعاء للمستضعفين",
-"الإكثار من الحمد والشكر"
-];
-
-/* ===== التقويم ===== */
-let selectedDay=1;
-const calendar=document.getElementById('calendar');
-
-for(let i=1;i<=30;i++){
-  const d=document.createElement('div');
-  d.className='day'+(i===1?' active':'');
-  d.innerText='رمضان '+i;
-  d.onclick=()=>{
-    document.querySelectorAll('.day').forEach(x=>x.classList.remove('active'));
-    d.classList.add('active');
-    selectedDay=i;
-    updateHeader();
-    openModal();
-  };
-  calendar.appendChild(d);
-}
-
-function updateHeader(){
-  const baseDate=new Date(2026,1,18);
-  const date=new Date(baseDate);
-  date.setDate(baseDate.getDate()+selectedDay-1);
-  document.getElementById('ramadanDay').innerText=
-    dayNames[date.getDay()]+" – "+selectedDay+" رمضان";
-}
-
-/* ===== Modal ===== */
-function openModal(){
-  const baseDate=new Date(2026,1,18);
-  const date=new Date(baseDate);
-  date.setDate(baseDate.getDate()+selectedDay-1);
-
-  document.getElementById('modalTitle').innerText=
-    dayNames[date.getDay()]+" – "+selectedDay+" رمضان";
-
-  document.getElementById('modalDate').innerText=
-    date.toLocaleDateString('ar-EG');
-
-  document.getElementById('modalDua').innerText=
-    duas[selectedDay-1];
-
-  document.getElementById('modalActions').innerText=
-    actions[selectedDay-1];
-
-  document.getElementById('modal').classList.add('active');
-}
-
-function closeModal(){
-  document.getElementById('modal').classList.remove('active');
-}
-
-updateHeader();
-</script>
 
 </body>
 </html>
