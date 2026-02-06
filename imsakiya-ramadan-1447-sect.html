@@ -4,7 +4,12 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>إمساكية رمضان الذكية</title>
+
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+
+<!-- PWA -->
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#2b1d4f">
 
 <style>
 body{
@@ -19,65 +24,107 @@ body{
   border-radius:22px;
   padding:20px;
   box-shadow:0 10px 30px rgba(0,0,0,.45);
+  position:relative;
 }
-.header{text-align:center}
-.header h1{margin:0;color:#f5d88c;font-size:21px}
-.header p{margin:6px 0;font-size:13px;opacity:.85}
 
-/* ===== صورة شخصية بإطار ===== */
+/* زر الإعدادات */
+.settings-btn{
+  position:absolute;
+  top:15px;
+  left:15px;
+  font-size:22px;
+  cursor:pointer;
+}
+
+/* المسنن الجانبي */
+.drawer{
+  position:fixed;
+  top:0;
+  right:-100%;
+  width:100%;
+  height:100%;
+  background:rgba(43,29,79,.95);
+  z-index:999;
+  transition:.3s;
+}
+.drawer.active{right:0}
+.drawer-content{
+  padding:25px;
+}
+.drawer h3{
+  text-align:center;
+  margin-bottom:20px;
+}
+.close-btn{
+  position:absolute;
+  top:15px;
+  left:15px;
+  font-size:22px;
+  cursor:pointer;
+}
+select{
+  width:100%;
+  padding:12px;
+  border-radius:12px;
+  border:none;
+  margin-bottom:15px;
+  font-size:15px;
+}
+
+.radio-group{
+  background:rgba(0,0,0,.35);
+  padding:15px;
+  border-radius:14px;
+}
+.radio-group label{
+  display:block;
+  margin:10px 0;
+}
+
+/* صورة */
 .photo-frame{
-  width:150px;
-  height:150px;
-  margin:18px auto;
+  width:150px;height:150px;
+  margin:20px auto;
   border-radius:50%;
   padding:5px;
   background:linear-gradient(135deg,#f5d88c,#ff9f6e);
 }
 .photo{
-  width:100%;
-  height:100%;
+  width:100%;height:100%;
   border-radius:50%;
   overflow:hidden;
-  border:3px solid #ffffff;
+  border:3px solid #fff;
 }
-.photo img{
-  width:100%;
-  height:100%;
-  object-fit:cover;
-}
-/* =========================== */
+.photo img{width:100%;height:100%;object-fit:cover}
+
+.header{text-align:center}
+.header h1{color:#f5d88c;font-size:21px;margin:0}
+.header p{opacity:.8;font-size:13px}
 
 .memorial{text-align:center;margin:15px 0}
-.memorial strong{
-  display:block;
-  font-size:20px;
-  margin-top:6px;
-  color:#ffb703;
-}
+.memorial strong{color:#ffb703;font-size:20px}
 
 .date-box{
   background:rgba(0,0,0,.35);
   border-radius:14px;
   padding:10px;
   text-align:center;
-  margin-bottom:12px;
-  font-size:14px;
+  margin-bottom:10px;
 }
 
-select{
-  width:100%;
+.dua-box{
+  background:rgba(255,255,255,.08);
+  border-radius:14px;
   padding:12px;
-  border-radius:12px;
-  border:none;
-  margin-bottom:10px;
-  font-size:15px;
+  text-align:center;
+  margin-bottom:12px;
+  font-size:14px;
 }
 
 .times{
   display:grid;
   grid-template-columns:repeat(3,1fr);
   gap:8px;
-  margin-bottom:10px;
 }
 .time-box{
   background:rgba(0,0,0,.35);
@@ -86,190 +133,149 @@ select{
   text-align:center;
 }
 .time-box span{font-size:12px;opacity:.8}
-.time-box strong{display:block;font-size:15px;color:#f5d88c}
-
-.countdown{
-  background:linear-gradient(135deg,#ff9f6e,#f5d88c);
-  color:#000;
-  border-radius:14px;
-  padding:12px;
-  text-align:center;
-  font-weight:700;
-  margin-bottom:15px;
-}
+.time-box strong{color:#f5d88c}
 
 .calendar{
   display:grid;
   grid-template-columns:repeat(5,1fr);
   gap:8px;
+  margin-top:15px;
 }
 .day{
   background:#5a3fc0;
   border-radius:12px;
-  padding:12px 0;
+  padding:10px 0;
   text-align:center;
-  font-size:13px;
   cursor:pointer;
 }
-.day.active{
-  background:#ff9f6e;
-  color:#000;
-  font-weight:700
-}
+.day.active{background:#ff9f6e;color:#000;font-weight:700}
 
-.footer{
+.install-btn{
+  margin-top:15px;
+  background:#f5d88c;
+  color:#000;
+  padding:12px;
+  border-radius:14px;
   text-align:center;
-  font-size:12px;
-  opacity:.7;
-  margin-top:15px
+  font-weight:700;
+  display:none;
+  cursor:pointer;
 }
 </style>
 </head>
 
 <body>
 
+<!-- Drawer -->
+<div class="drawer" id="drawer">
+  <div class="drawer-content">
+    <div class="close-btn" onclick="toggleDrawer()">✕</div>
+    <h3>الإعدادات</h3>
+
+    <select id="city">
+      <option value="">اختر المحافظة</option>
+      <option value="Baghdad">بغداد</option>
+      <option value="Basrah">البصرة</option>
+      <option value="Najaf">النجف</option>
+      <option value="Karbala">كربلاء</option>
+    </select>
+
+    <div class="radio-group">
+      <strong>المذهب</strong>
+      <label><input type="radio" name="sect" value="4" checked> الوقف السني</label>
+      <label><input type="radio" name="sect" value="0"> الوقف الشيعي</label>
+    </div>
+  </div>
+</div>
+
 <div class="container">
 <div class="card">
+
+  <div class="settings-btn" onclick="toggleDrawer()">⚙️</div>
 
   <div class="header">
     <h1>إمساكية رمضان الذكية</h1>
     <p>رمضان 1447 هـ – 2026 م</p>
   </div>
 
-  <!-- الصورة مع الإطار -->
   <div class="photo-frame">
     <div class="photo">
-      <img src="photo.jpg" alt="صورة الشهيد">
+      <img src="photo.jpg">
     </div>
   </div>
 
   <div class="memorial">
-    <div>الفاتحة على روح الشهيد</div>
+    الفاتحة على روح الشهيد
     <strong>أمان عبدالجبار عبدالرضا</strong>
   </div>
 
-  <div id="dateBox" class="date-box">
-    اختر اليوم من التقويم
-  </div>
-
-  <select id="sect">
-    <option value="4">التوقيت السني</option>
-    <option value="0">التوقيت الشيعي (الجعفري)</option>
-  </select>
-
-  <select id="city">
-    <option value="">اختر المحافظة</option>
-    <option value="Baghdad">بغداد</option>
-    <option value="Basrah">البصرة</option>
-    <option value="Najaf">النجف</option>
-    <option value="Karbala">كربلاء</option>
-    <option value="Mosul">نينوى</option>
-    <option value="Anbar">الأنبار</option>
-    <option value="Diyala">ديالى</option>
-    <option value="Wasit">واسط</option>
-    <option value="Maysan">ميسان</option>
-    <option value="Dhi Qar">ذي قار</option>
-    <option value="Muthanna">المثنى</option>
-    <option value="Qadisiyah">القادسية</option>
-    <option value="Babil">بابل</option>
-    <option value="Kirkuk">كركوك</option>
-    <option value="Salah ad Din">صلاح الدين</option>
-  </select>
+  <div id="dateBox" class="date-box"></div>
+  <div id="duaBox" class="dua-box"></div>
 
   <div class="times">
-    <div class="time-box"><span>الإمساك</span><strong id="imsak">--</strong></div>
     <div class="time-box"><span>الفجر</span><strong id="fajr">--</strong></div>
-    <div class="time-box"><span>الشروق</span><strong id="sunrise">--</strong></div>
     <div class="time-box"><span>الظهر</span><strong id="dhuhr">--</strong></div>
-    <div class="time-box"><span>العصر</span><strong id="asr">--</strong></div>
     <div class="time-box"><span>المغرب</span><strong id="maghrib">--</strong></div>
-    <div class="time-box"><span>العشاء</span><strong id="isha">--</strong></div>
-  </div>
-
-  <div id="countdown" class="countdown">
-    اختر المحافظة واليوم
   </div>
 
   <div class="calendar" id="calendar"></div>
 
-  <div class="footer">
-    تقبل الله منا ومنكم صالح الأعمال<br>
-    صدقة جارية
-  </div>
+  <div class="install-btn" id="installBtn">➕ تثبيت التطبيق</div>
 
 </div>
 </div>
 
 <script>
-const calendar = document.getElementById('calendar');
-const city = document.getElementById('city');
-const sect = document.getElementById('sect');
-const dateBox = document.getElementById('dateBox');
-const countdown = document.getElementById('countdown');
-
-let selectedDay = 1;
-let maghribTime = null;
-
-const dayNames = ["الأحد","الاثنين","الثلاثاء","الأربعاء","الخميس","الجمعة","السبت"];
-
-function loadTimes(){
-  if(!city.value) return;
-
-  const date = new Date(2026,1,17 + selectedDay);
-  const d = date.getDate();
-  const m = date.getMonth() + 1;
-  const y = date.getFullYear();
-  const dayName = dayNames[date.getDay()];
-
-  fetch(`https://api.aladhan.com/v1/timingsByCity/${d}-${m}-${y}?city=${city.value}&country=Iraq&method=${sect.value}`)
-    .then(res => res.json())
-    .then(data => {
-      const t = data.data.timings;
-      imsak.innerText = t.Imsak;
-      fajr.innerText = t.Fajr;
-      sunrise.innerText = t.Sunrise;
-      dhuhr.innerText = t.Dhuhr;
-      asr.innerText = t.Asr;
-      maghrib.innerText = t.Maghrib;
-      isha.innerText = t.Isha;
-
-      dateBox.innerText =
-        `اليوم: ${dayName} – ${selectedDay} رمضان | الموافق: ${d}/${m}/${y}`;
-
-      const [h,mm] = t.Maghrib.split(':');
-      maghribTime = new Date(y, m-1, d, h, mm);
-    });
+/* Drawer */
+function toggleDrawer(){
+  document.getElementById('drawer').classList.toggle('active');
 }
 
-setInterval(()=>{
-  if(!maghribTime) return;
-  const diff = maghribTime - new Date();
-  if(diff <= 0){
-    countdown.innerText = "🌙 حان وقت الإفطار";
-    return;
-  }
-  const h = Math.floor(diff/3600000);
-  const m = Math.floor((diff%3600000)/60000);
-  const s = Math.floor((diff%60000)/1000);
-  countdown.innerText = `الوقت المتبقي للإفطار: ${h}:${m}:${s}`;
-},1000);
+/* دعاء يومي */
+const duas=[
+"اللهم اجعل صيامي فيه صيام الصائمين...",
+"اللهم قربني فيه إلى مرضاتك...",
+"اللهم ارزقني فيه رحمة الأيتام..."
+];
 
+let selectedDay=1;
+const dayNames=["الأحد","الاثنين","الثلاثاء","الأربعاء","الخميس","الجمعة","السبت"];
+
+function updateDate(){
+  const date=new Date(2026,1,17+selectedDay);
+  document.getElementById('dateBox').innerText=
+   `اليوم ${dayNames[date.getDay()]} - ${selectedDay} رمضان`;
+  document.getElementById('duaBox').innerText=
+   duas[(selectedDay-1)%duas.length];
+}
+
+/* التقويم */
+const cal=document.getElementById('calendar');
 for(let i=1;i<=30;i++){
-  const d = document.createElement('div');
-  d.className = 'day' + (i===1 ? ' active' : '');
-  d.innerHTML = 'رمضان<br>' + i;
-  d.onclick = () => {
+  const d=document.createElement('div');
+  d.className='day'+(i===1?' active':'');
+  d.innerText='رمضان '+i;
+  d.onclick=()=>{
     document.querySelectorAll('.day').forEach(x=>x.classList.remove('active'));
     d.classList.add('active');
-    selectedDay = i;
-    loadTimes();
+    selectedDay=i;
+    updateDate();
   };
-  calendar.appendChild(d);
+  cal.appendChild(d);
 }
+updateDate();
 
-city.onchange = loadTimes;
-sect.onchange = loadTimes;
+/* PWA */
+let deferredPrompt;
+window.addEventListener('beforeinstallprompt',e=>{
+  e.preventDefault();
+  deferredPrompt=e;
+  document.getElementById('installBtn').style.display='block';
+});
+document.getElementById('installBtn').onclick=()=>{
+  deferredPrompt.prompt();
+};
 </script>
 
 </body>
-</html>
+  </html>
