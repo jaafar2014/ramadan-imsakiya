@@ -7,139 +7,85 @@
 
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
 
-<!-- PWA -->
-<link rel="manifest" href="manifest.json">
-<meta name="theme-color" content="#2b1d4f">
-
 <style>
 body{
   margin:0;
   font-family:'Cairo',sans-serif;
-  background:linear-gradient(180deg,#2b1d4f,#140b2e);
+  background:#1b0f33;
   color:#fff;
 }
-.container{max-width:430px;margin:auto;padding:20px;}
-.card{
-  background:rgba(255,255,255,.06);
-  border-radius:22px;
-  padding:20px;
-  box-shadow:0 10px 30px rgba(0,0,0,.45);
+.container{max-width:430px;margin:auto}
+
+/* ===== الهيدر ===== */
+.header-bg{
+  background:linear-gradient(180deg,#ff4fa1,#7b3cff,#1b0f33);
+  padding:30px 20px 80px;
+  text-align:center;
   position:relative;
 }
-
-/* زر الإعدادات */
-.settings-btn{
+.profile{
   position:absolute;
-  top:15px;
-  left:15px;
-  font-size:22px;
-  cursor:pointer;
+  left:50%;
+  bottom:-55px;
+  transform:translateX(-50%);
+}
+.profile img{
+  width:110px;
+  height:110px;
+  border-radius:50%;
+  object-fit:cover;
+  background:#ccc;
 }
 
-/* المسنن الجانبي */
-.drawer{
-  position:fixed;
-  top:0;
-  right:-100%;
-  width:100%;
-  height:100%;
-  background:rgba(43,29,79,.95);
-  z-index:999;
-  transition:.3s;
-}
-.drawer.active{right:0}
-.drawer-content{
-  padding:25px;
-}
-.drawer h3{
+/* ===== نص الاهداء ===== */
+.memorial{
+  margin-top:70px;
   text-align:center;
-  margin-bottom:20px;
 }
-.close-btn{
-  position:absolute;
-  top:15px;
-  left:15px;
-  font-size:22px;
-  cursor:pointer;
-}
-select{
-  width:100%;
-  padding:12px;
-  border-radius:12px;
-  border:none;
-  margin-bottom:15px;
-  font-size:15px;
-}
-
-.radio-group{
-  background:rgba(0,0,0,.35);
-  padding:15px;
-  border-radius:14px;
-}
-.radio-group label{
+.memorial small{opacity:.85}
+.memorial strong{
   display:block;
-  margin:10px 0;
+  color:#ff4d4d;
+  font-size:20px;
+  margin-top:6px;
 }
 
-/* صورة */
-.photo-frame{
-  width:150px;height:150px;
-  margin:20px auto;
-  border-radius:50%;
-  padding:5px;
-  background:linear-gradient(135deg,#f5d88c,#ff9f6e);
-}
-.photo{
-  width:100%;height:100%;
-  border-radius:50%;
-  overflow:hidden;
-  border:3px solid #fff;
-}
-.photo img{width:100%;height:100%;object-fit:cover}
-
-.header{text-align:center}
-.header h1{color:#f5d88c;font-size:21px;margin:0}
-.header p{opacity:.8;font-size:13px}
-
-.memorial{text-align:center;margin:15px 0}
-.memorial strong{color:#ffb703;font-size:20px}
-
-.date-box{
-  background:rgba(0,0,0,.35);
-  border-radius:14px;
-  padding:10px;
+/* ===== يوم رمضان ===== */
+.ramadan-day{
   text-align:center;
-  margin-bottom:10px;
+  font-size:22px;
+  font-weight:700;
+  color:#ffb703;
+  margin:15px 0;
 }
 
-.dua-box{
-  background:rgba(255,255,255,.08);
-  border-radius:14px;
-  padding:12px;
-  text-align:center;
-  margin-bottom:12px;
-  font-size:14px;
+/* ===== البطاقات ===== */
+.card{
+  background:#4c2db3;
+  border-radius:18px;
+  padding:15px;
+  margin:15px;
 }
-
 .times{
   display:grid;
   grid-template-columns:repeat(3,1fr);
-  gap:8px;
+  gap:10px;
 }
 .time-box{
-  background:rgba(0,0,0,.35);
+  background:#000;
   border-radius:12px;
   padding:10px;
   text-align:center;
 }
-.time-box span{font-size:12px;opacity:.8}
-.time-box strong{color:#f5d88c}
+.time-box span{font-size:12px;opacity:.7}
+.time-box strong{color:#ffb703}
 
+/* ===== التقويم ===== */
 .calendar{
   display:grid;
   grid-template-columns:repeat(5,1fr);
   gap:8px;
-  margin-top:15px;
+  padding:15px;
 }
 .day{
   background:#5a3fc0;
@@ -150,107 +96,149 @@ select{
 }
 .day.active{background:#ff9f6e;color:#000;font-weight:700}
 
-.install-btn{
-  margin-top:15px;
-  background:#f5d88c;
-  color:#000;
-  padding:12px;
-  border-radius:14px;
-  text-align:center;
-  font-weight:700;
-  display:none;
+/* ===== المسنن ===== */
+.settings-btn{
+  position:fixed;
+  top:15px;
+  right:15px;
+  font-size:22px;
   cursor:pointer;
+  z-index:10;
 }
+.drawer{
+  position:fixed;
+  top:0;
+  right:-100%;
+  width:100%;
+  height:100%;
+  background:#6a3ccf;
+  z-index:999;
+  transition:.3s;
+}
+.drawer.active{right:0}
+.drawer-content{padding:20px}
+.close-btn{font-size:22px;cursor:pointer}
+
+select{
+  width:100%;
+  padding:12px;
+  border-radius:12px;
+  border:none;
+  margin-bottom:12px;
+}
+
+/* ===== الدعاء ===== */
+.dua{
+  margin-top:20px;
+  background:#5a3fc0;
+  padding:15px;
+  border-radius:14px;
+  font-size:14px;
+  text-align:center;
+}
+.dua span{color:#ffb703;font-weight:700}
 </style>
 </head>
 
 <body>
 
-<!-- Drawer -->
+<div class="settings-btn" onclick="toggleDrawer()">⚙️</div>
+
+<!-- المسنن -->
 <div class="drawer" id="drawer">
   <div class="drawer-content">
     <div class="close-btn" onclick="toggleDrawer()">✕</div>
-    <h3>الإعدادات</h3>
+    <h3>اختيار المحافظة والمذهب</h3>
 
     <select id="city">
-      <option value="">اختر المحافظة</option>
-      <option value="Baghdad">بغداد</option>
-      <option value="Basrah">البصرة</option>
-      <option value="Najaf">النجف</option>
-      <option value="Karbala">كربلاء</option>
+      <option>بغداد</option>
+      <option>البصرة</option>
+      <option>النجف</option>
+      <option>كربلاء</option>
     </select>
 
-    <div class="radio-group">
-      <strong>المذهب</strong>
-      <label><input type="radio" name="sect" value="4" checked> الوقف السني</label>
-      <label><input type="radio" name="sect" value="0"> الوقف الشيعي</label>
+    <select id="sect">
+      <option>الوقف السني</option>
+      <option>الوقف الشيعي</option>
+    </select>
+
+    <div class="dua">
+      <span id="duaTitle">دعاء اليوم 1</span><br>
+      <div id="duaText"></div>
     </div>
   </div>
 </div>
 
 <div class="container">
-<div class="card">
 
-  <div class="settings-btn" onclick="toggleDrawer()">⚙️</div>
-
-  <div class="header">
-    <h1>إمساكية رمضان الذكية</h1>
-    <p>رمضان 1447 هـ – 2026 م</p>
-  </div>
-
-  <div class="photo-frame">
-    <div class="photo">
+  <div class="header-bg">
+    <div class="profile">
       <img src="photo.jpg">
     </div>
   </div>
 
   <div class="memorial">
-    الفاتحة على روح الشهيد
-    <strong>أمان عبدالجبار عبدالرضا</strong>
+    <small>الفاتحة على روح الشهيد</small>
+    <strong>المرحوم أمان عبدالجبار عبدالرضا</strong>
   </div>
 
-  <div id="dateBox" class="date-box"></div>
-  <div id="duaBox" class="dua-box"></div>
+  <div class="ramadan-day" id="ramadanDay">1 رمضان</div>
 
-  <div class="times">
-    <div class="time-box"><span>الفجر</span><strong id="fajr">--</strong></div>
-    <div class="time-box"><span>الظهر</span><strong id="dhuhr">--</strong></div>
-    <div class="time-box"><span>المغرب</span><strong id="maghrib">--</strong></div>
+  <div class="card">
+    <div class="times">
+      <div class="time-box"><span>الفجر</span><strong>5:00</strong></div>
+      <div class="time-box"><span>الظهر</span><strong>12:10</strong></div>
+      <div class="time-box"><span>المغرب</span><strong>6:20</strong></div>
+    </div>
   </div>
 
   <div class="calendar" id="calendar"></div>
 
-  <div class="install-btn" id="installBtn">➕ تثبيت التطبيق</div>
-
-</div>
 </div>
 
 <script>
-/* Drawer */
-function toggleDrawer(){
-  document.getElementById('drawer').classList.toggle('active');
-}
-
-/* دعاء يومي */
 const duas=[
-"اللهم اجعل صيامي فيه صيام الصائمين...",
-"اللهم قربني فيه إلى مرضاتك...",
-"اللهم ارزقني فيه رحمة الأيتام..."
+"اللهم اجعل صيامي فيه صيام الصائمين",
+"اللهم قربني فيه إلى مرضاتك",
+"اللهم ارزقني فيه رحمة الأيتام",
+"اللهم طهرني فيه من الدنس",
+"اللهم اجعلني فيه من المتوكلين",
+"اللهم ارزقني فيه حسن التوكل",
+"اللهم لا تخذلني فيه",
+"اللهم وفقني فيه لطاعتك",
+"اللهم اجعلني فيه من المستغفرين",
+"اللهم افتح لي فيه أبواب فضلك",
+"اللهم اجعلني فيه من المتقين",
+"اللهم زيني فيه بالستر والعفاف",
+"اللهم طهر قلبي من الظلمات",
+"اللهم ارزقني فيه الخشوع",
+"اللهم اجعلني فيه من المقبولين",
+"اللهم وفقني فيه لقيام الليل",
+"اللهم ارحم ضعفي",
+"اللهم اغفر لي ولوالدي",
+"اللهم تقبل صيامي",
+"اللهم اجعلني من عتقائك",
+"اللهم ارزقني حسن الخاتمة",
+"اللهم قربني إليك",
+"اللهم لا تحرمني فضلك",
+"اللهم اجعل عملي خالصًا",
+"اللهم ارزقني رضاك",
+"اللهم اكتبني من المقبولين",
+"اللهم اجعل هذا الشهر فرجًا",
+"اللهم اختم لنا بالمغفرة",
+"اللهم تقبل منا",
+"اللهم بلغنا ليلة القدر"
 ];
 
 let selectedDay=1;
-const dayNames=["الأحد","الاثنين","الثلاثاء","الأربعاء","الخميس","الجمعة","السبت"];
+const calendar=document.getElementById('calendar');
 
-function updateDate(){
-  const date=new Date(2026,1,17+selectedDay);
-  document.getElementById('dateBox').innerText=
-   `اليوم ${dayNames[date.getDay()]} - ${selectedDay} رمضان`;
-  document.getElementById('duaBox').innerText=
-   duas[(selectedDay-1)%duas.length];
+function update(){
+  document.getElementById('ramadanDay').innerText=selectedDay+" رمضان";
+  document.getElementById('duaTitle').innerText="دعاء اليوم "+selectedDay;
+  document.getElementById('duaText').innerText=duas[selectedDay-1];
 }
 
-/* التقويم */
-const cal=document.getElementById('calendar');
 for(let i=1;i<=30;i++){
   const d=document.createElement('div');
   d.className='day'+(i===1?' active':'');
@@ -259,22 +247,15 @@ for(let i=1;i<=30;i++){
     document.querySelectorAll('.day').forEach(x=>x.classList.remove('active'));
     d.classList.add('active');
     selectedDay=i;
-    updateDate();
+    update();
   };
-  cal.appendChild(d);
+  calendar.appendChild(d);
 }
-updateDate();
+update();
 
-/* PWA */
-let deferredPrompt;
-window.addEventListener('beforeinstallprompt',e=>{
-  e.preventDefault();
-  deferredPrompt=e;
-  document.getElementById('installBtn').style.display='block';
-});
-document.getElementById('installBtn').onclick=()=>{
-  deferredPrompt.prompt();
-};
+function toggleDrawer(){
+  document.getElementById('drawer').classList.toggle('active');
+}
 </script>
 
 </body>
