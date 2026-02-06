@@ -3,15 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>إمساكية رمضان الذكية</title>
+<title>إمساكية رمضان 2026م الإلكترونية</title>
 
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
-
-<!-- PWA -->
-<link rel="manifest" href="manifest.json">
-<meta name="theme-color" content="#6a3ccf">
-
-<script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
 
 <style>
 body{
@@ -20,37 +14,12 @@ body{
   background:#1b0f33;
   color:#fff;
 }
-.container{max-width:430px;margin:auto}
-
-/* ===== Menu ===== */
-.menu-btn{
-  position:fixed;
-  top:15px;
-  right:15px;
-  font-size:26px;
-  cursor:pointer;
-  z-index:10;
-}
-
-/* ===== Drawer ===== */
-.drawer{
-  position:fixed;
-  top:0;
-  right:-100%;
-  width:100%;
-  height:100%;
-  background:#6a3ccf;
-  z-index:999;
-  transition:.3s;
-}
-.drawer.active{right:0}
-.drawer-content{padding:20px}
-.close-btn{font-size:22px;cursor:pointer}
+.container{max-width:430px;margin:auto;padding-bottom:40px}
 
 /* ===== Header ===== */
 .header-bg{
   background:linear-gradient(180deg,#ff4fa1,#7b3cff,#1b0f33);
-  padding:30px 20px 80px;
+  padding:35px 20px 85px;
   text-align:center;
   position:relative;
 }
@@ -61,8 +30,7 @@ body{
   transform:translateX(-50%);
 }
 .profile img{
-  width:110px;
-  height:110px;
+  width:110px;height:110px;
   border-radius:50%;
   object-fit:cover;
   background:#ccc;
@@ -81,44 +49,19 @@ body{
   margin-top:6px;
 }
 
-/* ===== Day ===== */
+/* ===== Title ===== */
+.imsakiya-title{
+  text-align:center;
+  font-size:18px;
+  font-weight:700;
+  margin-top:15px;
+}
 .ramadan-day{
   text-align:center;
   font-size:22px;
   font-weight:700;
   color:#ffb703;
-  margin:15px 0;
-}
-
-/* ===== Cards ===== */
-.card{
-  background:#4c2db3;
-  border-radius:18px;
-  padding:15px;
-  margin:15px;
-}
-.times{
-  display:grid;
-  grid-template-columns:repeat(3,1fr);
-  gap:10px;
-}
-.time-box{
-  background:#000;
-  border-radius:12px;
-  padding:10px;
-  text-align:center;
-}
-.time-box span{font-size:12px;opacity:.7}
-.time-box strong{color:#ffb703}
-
-.countdown{
-  margin-top:12px;
-  background:#ffb703;
-  color:#000;
-  border-radius:14px;
-  padding:10px;
-  text-align:center;
-  font-weight:700;
+  margin:8px 0 15px;
 }
 
 /* ===== Calendar ===== */
@@ -131,73 +74,59 @@ body{
 .day{
   background:#5a3fc0;
   border-radius:12px;
-  padding:10px 0;
+  padding:12px 0;
   text-align:center;
   cursor:pointer;
 }
-.day.active{background:#ff9f6e;color:#000;font-weight:700}
+.day.active{
+  background:#ff9f6e;
+  color:#000;
+  font-weight:700;
+}
 
-/* ===== Dua ===== */
-.dua{
-  margin-top:20px;
+/* ===== Modal ===== */
+.modal{
+  position:fixed;
+  left:0;right:0;bottom:-100%;
+  background:#4c2db3;
+  border-radius:22px 22px 0 0;
+  padding:20px;
+  transition:.3s;
+  z-index:999;
+  max-height:80%;
+  overflow:auto;
+}
+.modal.active{bottom:0}
+.modal h3{
+  text-align:center;
+  margin-top:0;
+  color:#ffb703;
+}
+.modal .close{
+  text-align:center;
+  font-size:20px;
+  cursor:pointer;
+  margin-bottom:10px;
+}
+.modal-section{
   background:#5a3fc0;
-  padding:15px;
   border-radius:14px;
-  font-size:14px;
-  text-align:center;
-}
-.dua span{color:#ffb703;font-weight:700}
-
-/* ===== Buttons ===== */
-button{
-  width:100%;
   padding:12px;
-  border:none;
-  border-radius:14px;
-  margin-top:10px;
-  font-family:'Cairo';
-  font-size:15px;
-  cursor:pointer;
+  margin-bottom:10px;
+  font-size:14px;
 }
-.save-btn{background:#ff4d4d;color:#fff}
-.install-btn{background:#ffb703;color:#000;display:none}
+.modal-section span{
+  color:#ffb703;
+  font-weight:700;
+  display:block;
+  margin-bottom:5px;
+}
 </style>
 </head>
 
 <body>
 
-<div class="menu-btn" onclick="toggleDrawer()">☰</div>
-
-<!-- Drawer -->
-<div class="drawer" id="drawer">
-  <div class="drawer-content">
-    <div class="close-btn" onclick="toggleDrawer()">✕</div>
-
-    <h3>الإعدادات</h3>
-
-    <select id="city">
-      <option value="">اختر المحافظة</option>
-      <option value="Baghdad">بغداد</option>
-      <option value="Basrah">البصرة</option>
-      <option value="Najaf">النجف</option>
-      <option value="Karbala">كربلاء</option>
-    </select>
-
-    <select id="sect">
-      <option value="4">الوقف السني</option>
-      <option value="0">الوقف الشيعي</option>
-    </select>
-
-    <div class="dua">
-      <span id="duaTitle"></span><br>
-      <div id="duaText"></div>
-    </div>
-
-    <button class="save-btn" onclick="saveImage()">📸 حفظ صورة اليوم</button>
-  </div>
-</div>
-
-<div id="captureArea" class="container">
+<div class="container">
 
   <div class="header-bg">
     <div class="profile">
@@ -210,70 +139,113 @@ button{
     <strong>المرحوم أمان عبدالجبار عبدالرضا</strong>
   </div>
 
-  <div class="ramadan-day" id="ramadanDay">1 رمضان</div>
+  <div class="imsakiya-title">
+    إمساكية رمضان 2026م الإلكترونية
+  </div>
 
-  <div class="card">
-    <div class="times">
-      <div class="time-box"><span>الفجر</span><strong id="fajr">--</strong></div>
-      <div class="time-box"><span>الظهر</span><strong id="dhuhr">--</strong></div>
-      <div class="time-box"><span>المغرب</span><strong id="maghrib">--</strong></div>
-    </div>
-    <div class="countdown" id="countdown">اختر المحافظة</div>
+  <div class="ramadan-day" id="ramadanDay">
+    الأربعاء – 1 رمضان
   </div>
 
   <div class="calendar" id="calendar"></div>
 
 </div>
 
-<button class="install-btn" id="installBtn">➕ تثبيت التطبيق</button>
+<!-- Modal -->
+<div class="modal" id="modal">
+  <div class="close" onclick="closeModal()">⬇️</div>
+  <h3 id="modalTitle"></h3>
+
+  <div class="modal-section">
+    <span>التاريخ الميلادي</span>
+    <div id="modalDate"></div>
+  </div>
+
+  <div class="modal-section">
+    <span>دعاء اليوم</span>
+    <div id="modalDua"></div>
+  </div>
+
+  <div class="modal-section">
+    <span>الأعمال المستحبة</span>
+    <div id="modalActions"></div>
+  </div>
+</div>
 
 <script>
-/* ===== Dua ===== */
+/* ===== بيانات الأيام ===== */
+const dayNames=["الأحد","الاثنين","الثلاثاء","الأربعاء","الخميس","الجمعة","السبت"];
+
 const duas=[
-"اللهم اجعل صيامي فيه صيام الصائمين",
-"اللهم قربني فيه إلى مرضاتك",
-"اللهم ارزقني فيه رحمة الأيتام",
-"اللهم طهرني فيه من الدنس",
-"اللهم اجعلني فيه من المتوكلين",
-"اللهم ارزقني فيه حسن التوكل",
-"اللهم لا تخذلني فيه",
-"اللهم وفقني فيه لطاعتك",
-"اللهم اجعلني فيه من المستغفرين",
-"اللهم افتح لي فيه أبواب فضلك",
-"اللهم اجعلني فيه من المتقين",
-"اللهم زيني فيه بالستر والعفاف",
-"اللهم طهر قلبي من الظلمات",
-"اللهم ارزقني فيه الخشوع",
-"اللهم اجعلني فيه من المقبولين",
-"اللهم وفقني فيه لقيام الليل",
-"اللهم ارحم ضعفي",
-"اللهم اغفر لي ولوالدي",
-"اللهم تقبل صيامي",
-"اللهم اجعلني من عتقائك",
-"اللهم ارزقني حسن الخاتمة",
-"اللهم قربني إليك",
-"اللهم لا تحرمني فضلك",
-"اللهم اجعل عملي خالصًا",
-"اللهم ارزقني رضاك",
-"اللهم اكتبني من المقبولين",
-"اللهم اجعل هذا الشهر فرجًا",
-"اللهم اختم لنا بالمغفرة",
-"اللهم تقبل منا",
-"اللهم بلغنا ليلة القدر"
+"اللهم اجعل صيامي فيه صيام الصائمين...",
+"اللهم قربني فيه إلى مرضاتك...",
+"اللهم ارزقني فيه رحمة الأيتام...",
+"اللهم طهرني فيه من الدنس...",
+"اللهم اجعلني فيه من المتوكلين...",
+"اللهم ارزقني فيه حسن التوكل...",
+"اللهم لا تخذلني فيه...",
+"اللهم وفقني فيه لطاعتك...",
+"اللهم اجعلني فيه من المستغفرين...",
+"اللهم افتح لي فيه أبواب فضلك...",
+"اللهم اجعلني فيه من المتقين...",
+"اللهم زيني فيه بالستر والعفاف...",
+"اللهم طهر قلبي من الظلمات...",
+"اللهم ارزقني فيه الخشوع...",
+"اللهم اجعلني فيه من المقبولين...",
+"اللهم وفقني فيه لقيام الليل...",
+"اللهم ارحم ضعفي...",
+"اللهم اغفر لي ولوالدي...",
+"اللهم تقبل صيامي...",
+"اللهم اجعلني من عتقائك...",
+"اللهم ارزقني حسن الخاتمة...",
+"اللهم قربني إليك...",
+"اللهم لا تحرمني فضلك...",
+"اللهم اجعل عملي خالصًا...",
+"اللهم ارزقني رضاك...",
+"اللهم اكتبني من المقبولين...",
+"اللهم اجعل هذا الشهر فرجًا...",
+"اللهم اختم لنا بالمغفرة...",
+"اللهم تقبل منا...",
+"اللهم بلغنا ليلة القدر..."
 ];
 
+const actions=[
+"الغسل، قراءة دعاء اليوم، قراءة جزء من القرآن",
+"صلاة ركعتين، الاستغفار 70 مرة",
+"الصدقة ولو بالقليل، صلة الرحم",
+"قراءة سورة القدر 10 مرات",
+"قراءة دعاء الافتتاح",
+"زيارة الإمام الحسين (ع) عن بُعد",
+"الإكثار من الصلاة على محمد وآل محمد",
+"قراءة سورة يس",
+"الدعاء للمؤمنين والمؤمنات",
+"صلاة الليل",
+"قراءة سورة الإخلاص 100 مرة",
+"الاستغفار بعد كل صلاة",
+"قراءة دعاء كميل",
+"صلاة ركعتين قربةً إلى الله",
+"الإكثار من الذكر",
+"قراءة القرآن بتدبر",
+"الدعاء للوالدين",
+"صلة الرحم",
+"قراءة سورة الفتح",
+"الإكثار من الصدقة",
+"الدعاء بتعجيل الفرج",
+"قراءة دعاء العهد",
+"قراءة سورة الدخان",
+"الإكثار من الاستغفار",
+"الدعاء عند الإفطار",
+"قراءة سورة الرحمن",
+"التحضير لليالي القدر",
+"قيام الليل",
+"الدعاء للمستضعفين",
+"الإكثار من الحمد والشكر"
+];
+
+/* ===== التقويم ===== */
 let selectedDay=1;
-let maghribTime=null;
-
-function updateDua(){
-  document.getElementById('ramadanDay').innerText=selectedDay+" رمضان";
-  document.getElementById('duaTitle').innerText="دعاء اليوم "+selectedDay;
-  document.getElementById('duaText').innerText=duas[selectedDay-1];
-}
-updateDua();
-
-/* ===== Calendar ===== */
 const calendar=document.getElementById('calendar');
+
 for(let i=1;i<=30;i++){
   const d=document.createElement('div');
   d.className='day'+(i===1?' active':'');
@@ -282,70 +254,46 @@ for(let i=1;i<=30;i++){
     document.querySelectorAll('.day').forEach(x=>x.classList.remove('active'));
     d.classList.add('active');
     selectedDay=i;
-    updateDua();
-    loadTimes();
+    updateHeader();
+    openModal();
   };
   calendar.appendChild(d);
 }
 
-/* ===== Times ===== */
-function loadTimes(){
-  const city=document.getElementById('city').value;
-  const sect=document.getElementById('sect').value;
-  if(!city) return;
-
-  const date=new Date(2026,1,17+selectedDay);
-  const d=date.getDate(),m=date.getMonth()+1,y=date.getFullYear();
-
-  fetch(`https://api.aladhan.com/v1/timingsByCity/${d}-${m}-${y}?city=${city}&country=Iraq&method=${sect}`)
-  .then(res=>res.json())
-  .then(data=>{
-    const t=data.data.timings;
-    fajr.innerText=t.Fajr;
-    dhuhr.innerText=t.Dhuhr;
-    maghrib.innerText=t.Maghrib;
-    const [h,min]=t.Maghrib.split(':');
-    maghribTime=new Date(y,m-1,d,h,min);
-  });
-}
-setInterval(()=>{
-  if(!maghribTime) return;
-  const diff=maghribTime-new Date();
-  if(diff<=0){
-    countdown.innerText="🌙 حان وقت الإفطار";
-    return;
-  }
-  const h=Math.floor(diff/3600000);
-  const m=Math.floor((diff%3600000)/60000);
-  const s=Math.floor((diff%60000)/1000);
-  countdown.innerText=`المتبقي للإفطار ${h}:${m}:${s}`;
-},1000);
-
-/* ===== Save Image ===== */
-function saveImage(){
-  html2canvas(document.getElementById('captureArea')).then(canvas=>{
-    const link=document.createElement('a');
-    link.download=`رمضان_${selectedDay}.png`;
-    link.href=canvas.toDataURL();
-    link.click();
-  });
+function updateHeader(){
+  const baseDate=new Date(2026,1,18);
+  const date=new Date(baseDate);
+  date.setDate(baseDate.getDate()+selectedDay-1);
+  document.getElementById('ramadanDay').innerText=
+    dayNames[date.getDay()]+" – "+selectedDay+" رمضان";
 }
 
-/* ===== Drawer ===== */
-function toggleDrawer(){
-  document.getElementById('drawer').classList.toggle('active');
+/* ===== Modal ===== */
+function openModal(){
+  const baseDate=new Date(2026,1,18);
+  const date=new Date(baseDate);
+  date.setDate(baseDate.getDate()+selectedDay-1);
+
+  document.getElementById('modalTitle').innerText=
+    dayNames[date.getDay()]+" – "+selectedDay+" رمضان";
+
+  document.getElementById('modalDate').innerText=
+    date.toLocaleDateString('ar-EG');
+
+  document.getElementById('modalDua').innerText=
+    duas[selectedDay-1];
+
+  document.getElementById('modalActions').innerText=
+    actions[selectedDay-1];
+
+  document.getElementById('modal').classList.add('active');
 }
 
-/* ===== PWA ===== */
-let deferredPrompt;
-window.addEventListener('beforeinstallprompt',e=>{
-  e.preventDefault();
-  deferredPrompt=e;
-  document.getElementById('installBtn').style.display='block';
-});
-document.getElementById('installBtn').onclick=()=>{
-  deferredPrompt.prompt();
-};
+function closeModal(){
+  document.getElementById('modal').classList.remove('active');
+}
+
+updateHeader();
 </script>
 
 </body>
