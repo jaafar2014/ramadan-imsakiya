@@ -3,272 +3,241 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>إمساكية رمضان الذكية</title>
-<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+<title>إمساكية رمضان 1447هـ</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap" rel="stylesheet">
 
 <style>
+:root{
+  --bg:#3a2c5f;
+  --card:#2b2146;
+  --accent:#ffb36b;
+  --text:#ffffff;
+}
+
 body{
   margin:0;
   font-family:'Cairo',sans-serif;
-  background:linear-gradient(180deg,#2b1d4f,#140b2e);
-  color:#fff;
+  background:linear-gradient(180deg,#3a2c5f,#2b2146);
+  color:var(--text);
 }
-.container{max-width:430px;margin:auto;padding:20px;}
-.card{
-  background:rgba(255,255,255,.06);
-  border-radius:22px;
-  padding:20px;
-  box-shadow:0 10px 30px rgba(0,0,0,.45);
-}
-.header{text-align:center}
-.header h1{margin:0;color:#f5d88c;font-size:21px}
-.header p{margin:6px 0;font-size:13px;opacity:.85}
 
-/* ===== صورة شخصية بإطار ===== */
-.photo-frame{
+.container{
+  max-width:430px;
+  margin:auto;
+  padding:20px;
+}
+
+.header{
+  text-align:center;
+}
+
+.header h1{
+  color:var(--accent);
+  margin-bottom:5px;
+}
+
+.profile{
+  margin:20px auto;
   width:150px;
   height:150px;
-  margin:18px auto;
   border-radius:50%;
+  background:linear-gradient(135deg,#ffb36b,#ff7b54);
   padding:5px;
-  background:linear-gradient(135deg,#f5d88c,#ff9f6e);
 }
-.photo{
+
+.profile img{
   width:100%;
   height:100%;
   border-radius:50%;
-  overflow:hidden;
-  border:3px solid #ffffff;
-}
-.photo img{
-  width:100%;
-  height:100%;
   object-fit:cover;
-}
-/* =========================== */
-
-.memorial{text-align:center;margin:15px 0}
-.memorial strong{
-  display:block;
-  font-size:20px;
-  margin-top:6px;
-  color:#ffb703;
+  background:#999;
 }
 
-.date-box{
-  background:rgba(0,0,0,.35);
-  border-radius:14px;
-  padding:10px;
+.name{
   text-align:center;
-  margin-bottom:12px;
-  font-size:14px;
+  margin-top:10px;
 }
 
-select{
+.name .title{
+  font-size:14px;
+  opacity:.8;
+}
+
+.name .main{
+  color:var(--accent);
+  font-size:22px;
+  font-weight:900;
+}
+
+.today-card{
+  background:rgba(0,0,0,.25);
+  border-radius:16px;
+  padding:12px;
+  text-align:center;
+  margin:15px 0;
+}
+
+.select{
   width:100%;
   padding:12px;
-  border-radius:12px;
+  border-radius:14px;
   border:none;
+  font-size:16px;
   margin-bottom:10px;
-  font-size:15px;
 }
 
 .times{
   display:grid;
   grid-template-columns:repeat(3,1fr);
-  gap:8px;
-  margin-bottom:10px;
+  gap:10px;
 }
+
 .time-box{
-  background:rgba(0,0,0,.35);
-  border-radius:12px;
-  padding:10px;
+  background:#1f1736;
+  padding:12px;
+  border-radius:14px;
   text-align:center;
 }
-.time-box span{font-size:12px;opacity:.8}
-.time-box strong{display:block;font-size:15px;color:#f5d88c}
+
+.time-box span{
+  display:block;
+  font-size:18px;
+  font-weight:700;
+  color:var(--accent);
+}
 
 .countdown{
-  background:linear-gradient(135deg,#ff9f6e,#f5d88c);
+  margin-top:20px;
+  background:linear-gradient(135deg,#ffb36b,#ff7b54);
   color:#000;
-  border-radius:14px;
-  padding:12px;
+  padding:14px;
+  border-radius:16px;
   text-align:center;
   font-weight:700;
-  margin-bottom:15px;
 }
 
-.calendar{
-  display:grid;
-  grid-template-columns:repeat(5,1fr);
-  gap:8px;
+.dua{
+  margin-top:15px;
+  background:rgba(255,255,255,.08);
+  padding:14px;
+  border-radius:16px;
+  font-size:14px;
+  line-height:1.7;
 }
-.day{
-  background:#5a3fc0;
-  border-radius:12px;
-  padding:12px 0;
-  text-align:center;
-  font-size:13px;
+
+.menu-btn{
+  position:fixed;
+  top:15px;
+  right:15px;
+  font-size:28px;
   cursor:pointer;
 }
-.day.active{
-  background:#ff9f6e;
-  color:#000;
-  font-weight:700
+
+.sidebar{
+  position:fixed;
+  top:0;
+  right:-100%;
+  width:80%;
+  height:100%;
+  background:#4a3b78;
+  padding:20px;
+  transition:.3s;
 }
 
-.footer{
-  text-align:center;
-  font-size:12px;
-  opacity:.7;
-  margin-top:15px
+.sidebar.active{
+  right:0;
+}
+
+.sidebar h3{
+  margin-top:0;
+  color:var(--accent);
 }
 </style>
 </head>
 
 <body>
 
+<div class="menu-btn" onclick="toggleMenu()">☰</div>
+
+<div class="sidebar" id="sidebar">
+  <h3>الإعدادات</h3>
+  <p>المذهب: الوقف الشيعي (الجعفري)</p>
+  <select class="select">
+    <option>البصرة</option>
+    <option>بغداد</option>
+    <option>النجف</option>
+    <option>كربلاء</option>
+    <option>ذي قار</option>
+    <option>ميسان</option>
+  </select>
+</div>
+
 <div class="container">
-<div class="card">
 
   <div class="header">
     <h1>إمساكية رمضان الذكية</h1>
-    <p>رمضان 1447 هـ – 2026 م</p>
+    <div>رمضان 1447هـ – 2026م</div>
   </div>
 
-  <!-- الصورة مع الإطار -->
-  <div class="photo-frame">
-    <div class="photo">
-      <img src="photo.jpg" alt="صورة الشهيد">
-    </div>
+  <div class="profile">
+    <img src="IMG_20260206_214353.jpg" alt="">
   </div>
 
-  <div class="memorial">
-    <div>الفاتحة على روح الشهيد</div>
-    <strong>أمان عبدالجبار عبدالرضا</strong>
+  <div class="name">
+    <div class="title">الفاتحة على روح الشهيد</div>
+    <div class="main">أمان عبدالجبار عبدالرضا</div>
   </div>
 
-  <div id="dateBox" class="date-box">
-    اختر اليوم من التقويم
+  <div class="today-card" id="dayInfo">
+    اليوم: الإثنين – 1 رمضان<br>
+    18 / 2 / 2026
   </div>
 
-  <select id="sect">
-    <option value="4">التوقيت السني</option>
-    <option value="0">التوقيت الشيعي (الجعفري)</option>
-  </select>
-
-  <select id="city">
-    <option value="">اختر المحافظة</option>
-    <option value="Baghdad">بغداد</option>
-    <option value="Basrah">البصرة</option>
-    <option value="Najaf">النجف</option>
-    <option value="Karbala">كربلاء</option>
-    <option value="Mosul">نينوى</option>
-    <option value="Anbar">الأنبار</option>
-    <option value="Diyala">ديالى</option>
-    <option value="Wasit">واسط</option>
-    <option value="Maysan">ميسان</option>
-    <option value="Dhi Qar">ذي قار</option>
-    <option value="Muthanna">المثنى</option>
-    <option value="Qadisiyah">القادسية</option>
-    <option value="Babil">بابل</option>
-    <option value="Kirkuk">كركوك</option>
-    <option value="Salah ad Din">صلاح الدين</option>
+  <select class="select" onchange="changeDay(this.value)">
+    <option value="1">رمضان 1</option>
+    <option value="2">رمضان 2</option>
+    <option value="3">رمضان 3</option>
+    <option value="4">رمضان 4</option>
+    <option value="5">رمضان 5</option>
+    <!-- أكمل حتى 30 -->
   </select>
 
   <div class="times">
-    <div class="time-box"><span>الإمساك</span><strong id="imsak">--</strong></div>
-    <div class="time-box"><span>الفجر</span><strong id="fajr">--</strong></div>
-    <div class="time-box"><span>الشروق</span><strong id="sunrise">--</strong></div>
-    <div class="time-box"><span>الظهر</span><strong id="dhuhr">--</strong></div>
-    <div class="time-box"><span>العصر</span><strong id="asr">--</strong></div>
-    <div class="time-box"><span>المغرب</span><strong id="maghrib">--</strong></div>
-    <div class="time-box"><span>العشاء</span><strong id="isha">--</strong></div>
+    <div class="time-box">الإمساك<span>05:05</span></div>
+    <div class="time-box">الفجر<span>05:15</span></div>
+    <div class="time-box">الشروق<span>06:27</span></div>
+    <div class="time-box">الظهر<span>12:03</span></div>
+    <div class="time-box">العصر<span>15:13</span></div>
+    <div class="time-box">المغرب<span>17:54</span></div>
+    <div class="time-box">العشاء<span>18:41</span></div>
   </div>
 
-  <div id="countdown" class="countdown">
-    اختر المحافظة واليوم
+  <div class="dua" id="dua">
+    اللهم قرّبني فيه إلى مرضاتك، وجنّبني فيه من سخطك ونقماتك.
   </div>
 
-  <div class="calendar" id="calendar"></div>
-
-  <div class="footer">
-    تقبل الله منا ومنكم صالح الأعمال<br>
-    صدقة جارية
+  <div class="countdown" id="countdown">
+    الوقت المتبقي للإفطار: --:--:--
   </div>
 
-</div>
 </div>
 
 <script>
-const calendar = document.getElementById('calendar');
-const city = document.getElementById('city');
-const sect = document.getElementById('sect');
-const dateBox = document.getElementById('dateBox');
-const countdown = document.getElementById('countdown');
+const duas=[
+"اللهم قرّبني فيه إلى مرضاتك، وجنّبني فيه من سخطك ونقماتك.",
+"اللهم حبّب إليّ الإحسان، وكرّه إليّ الفسوق والعصيان.",
+"اللهم ارزقني فيه الذهن والتنبيه، وباعدني فيه من السفاهة والتمويه.",
+];
 
-let selectedDay = 1;
-let maghribTime = null;
-
-const dayNames = ["الأحد","الاثنين","الثلاثاء","الأربعاء","الخميس","الجمعة","السبت"];
-
-function loadTimes(){
-  if(!city.value) return;
-
-  const date = new Date(2026,1,17 + selectedDay);
-  const d = date.getDate();
-  const m = date.getMonth() + 1;
-  const y = date.getFullYear();
-  const dayName = dayNames[date.getDay()];
-
-  fetch(`https://api.aladhan.com/v1/timingsByCity/${d}-${m}-${y}?city=${city.value}&country=Iraq&method=${sect.value}`)
-    .then(res => res.json())
-    .then(data => {
-      const t = data.data.timings;
-      imsak.innerText = t.Imsak;
-      fajr.innerText = t.Fajr;
-      sunrise.innerText = t.Sunrise;
-      dhuhr.innerText = t.Dhuhr;
-      asr.innerText = t.Asr;
-      maghrib.innerText = t.Maghrib;
-      isha.innerText = t.Isha;
-
-      dateBox.innerText =
-        `اليوم: ${dayName} – ${selectedDay} رمضان | الموافق: ${d}/${m}/${y}`;
-
-      const [h,mm] = t.Maghrib.split(':');
-      maghribTime = new Date(y, m-1, d, h, mm);
-    });
+function changeDay(d){
+ document.getElementById("dua").innerText=duas[(d-1)%duas.length];
+ document.getElementById("dayInfo").innerHTML=`اليوم: رمضان ${d}<br>2026/2/${17+parseInt(d)}`;
 }
 
-setInterval(()=>{
-  if(!maghribTime) return;
-  const diff = maghribTime - new Date();
-  if(diff <= 0){
-    countdown.innerText = "🌙 حان وقت الإفطار";
-    return;
-  }
-  const h = Math.floor(diff/3600000);
-  const m = Math.floor((diff%3600000)/60000);
-  const s = Math.floor((diff%60000)/1000);
-  countdown.innerText = `الوقت المتبقي للإفطار: ${h}:${m}:${s}`;
-},1000);
-
-for(let i=1;i<=30;i++){
-  const d = document.createElement('div');
-  d.className = 'day' + (i===1 ? ' active' : '');
-  d.innerHTML = 'رمضان<br>' + i;
-  d.onclick = () => {
-    document.querySelectorAll('.day').forEach(x=>x.classList.remove('active'));
-    d.classList.add('active');
-    selectedDay = i;
-    loadTimes();
-  };
-  calendar.appendChild(d);
+function toggleMenu(){
+ document.getElementById("sidebar").classList.toggle("active");
 }
-
-city.onchange = loadTimes;
-sect.onchange = loadTimes;
 </script>
 
 </body>
