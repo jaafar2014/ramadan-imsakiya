@@ -137,6 +137,27 @@ body{
   grid-template-columns:1fr;
 }
 
+/* ===== calendar ===== */
+.calendar{
+  display:grid;
+  grid-template-columns:repeat(5,1fr);
+  gap:10px;
+  margin:15px 0;
+}
+.day{
+  background:#20173f;
+  border-radius:14px;
+  padding:12px 0;
+  text-align:center;
+  font-weight:700;
+  opacity:.85;
+}
+.day.active{
+  background:linear-gradient(135deg,#ff9f6e,#f5c16c);
+  color:#000;
+  opacity:1;
+}
+
 /* ===== bottom bar ===== */
 .bottom-bar{
   margin-top:15px;
@@ -185,7 +206,7 @@ body{
   </div>
 
   <!-- selectors -->
-  <div class="selector">التوقيت: الوقف الشيعي (الجعفري)</div>
+  <div class="selector">المذهب: الوقف الشيعي (الجعفري)</div>
   <div class="selector">المحافظة: البصرة</div>
 
   <!-- times -->
@@ -222,6 +243,16 @@ body{
       <div class="label">العشاء</div>
       <div class="value">18:41</div>
     </div>
+  </div>
+
+  <!-- calendar -->
+  <div class="calendar">
+    <div class="day active">1</div><div class="day">2</div><div class="day">3</div><div class="day">4</div><div class="day">5</div>
+    <div class="day">6</div><div class="day">7</div><div class="day">8</div><div class="day">9</div><div class="day">10</div>
+    <div class="day">11</div><div class="day">12</div><div class="day">13</div><div class="day">14</div><div class="day">15</div>
+    <div class="day">16</div><div class="day">17</div><div class="day">18</div><div class="day">19</div><div class="day">20</div>
+    <div class="day">21</div><div class="day">22</div><div class="day">23</div><div class="day">24</div><div class="day">25</div>
+    <div class="day">26</div><div class="day">27</div><div class="day">28</div><div class="day">29</div><div class="day">30</div>
   </div>
 
   <!-- bottom -->
