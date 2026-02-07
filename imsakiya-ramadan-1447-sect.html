@@ -72,7 +72,13 @@ body{
 
 .profile{
   text-align:center;
-  margin-top:40px;
+  margin-top:20px;
+}
+
+.title-top{
+  font-size:15px;
+  color:#f0b36d;
+  margin-bottom:10px;
 }
 
 .avatar{
@@ -90,8 +96,14 @@ body{
   object-fit:cover;
 }
 
+.memorial{
+  margin-top:12px;
+  font-size:15px;
+  color:#ddd;
+}
+
 .name{
-  margin-top:15px;
+  margin-top:6px;
   font-size:22px;
   color:#f0b36d;
   font-weight:700;
@@ -104,7 +116,7 @@ body{
   color:#ddd;
 }
 
-/* ===== بطاقة اليوم مع أنميشن ===== */
+/* ===== بطاقة اليوم ===== */
 .today{
   margin:20px 0;
   padding:15px;
@@ -182,38 +194,24 @@ body{
   color:#000;
   font-weight:700;
 }
-
-.save-btn{
-  margin-top:15px;
-  width:100%;
-  padding:12px;
-  border:none;
-  border-radius:14px;
-  background:#f0b36d;
-  font-family:'Cairo';
-  font-weight:700;
-  cursor:pointer;
-}
 </style>
 </head>
 
 <body>
 
-<!-- زر القائمة -->
 <div class="menu-btn" onclick="toggleMenu()">☰</div>
 
-<!-- القائمة الجانبية -->
 <div class="sidebar" id="sidebar">
   <div class="close-btn" onclick="toggleMenu()">✕</div>
   <h3>الإعدادات</h3>
 
-  <select>
-    <option>البصرة</option>
-    <option>بغداد</option>
-    <option>النجف</option>
-    <option>كربلاء</option>
-    <option>ذي قار</option>
-    <option>ميسان</option>
+  <select id="citySelect" onchange="updateTimes()">
+    <option value="basra">البصرة</option>
+    <option value="baghdad">بغداد</option>
+    <option value="najaf">النجف</option>
+    <option value="karbala">كربلاء</option>
+    <option value="dhiqar">ذي قار</option>
+    <option value="maysan">ميسان</option>
   </select>
 
   <select>
@@ -222,13 +220,18 @@ body{
   </select>
 </div>
 
-<div class="container" id="capture">
+<div class="container">
 
 <div class="profile">
+  <div class="title-top">إمساكية رمضان الإلكترونية 2026م – 1447هـ</div>
+
   <div class="avatar">
     <img src="IMG_20260206_214353.jpg">
   </div>
+
+  <div class="memorial">الفاتحة على روح الشهيد</div>
   <div class="name">أمان عبدالجبار عبدالرِضا</div>
+
   <div class="dua">
     اللهم اغفر له وارحمه واعفُ عنه، وأسكنه فسيح جناتك.
   </div>
@@ -237,22 +240,20 @@ body{
 <div class="today" id="todayBox"></div>
 
 <div class="times">
-  <div class="time-box">الإمساك<span>05:05</span></div>
-  <div class="time-box">الفجر<span>05:15</span></div>
-  <div class="time-box">الشروق<span>06:27</span></div>
-  <div class="time-box">الظهر<span>12:03</span></div>
-  <div class="time-box">العصر<span>15:13</span></div>
-  <div class="time-box">المغرب<span>17:54</span></div>
+  <div class="time-box">الإمساك<span id="imsak"></span></div>
+  <div class="time-box">الفجر<span id="fajr"></span></div>
+  <div class="time-box">الشروق<span id="sunrise"></span></div>
+  <div class="time-box">الظهر<span id="dhuhr"></span></div>
+  <div class="time-box">العصر<span id="asr"></span></div>
+  <div class="time-box">المغرب<span id="maghrib"></span></div>
 </div>
 
-<div class="countdown">الوقت المتبقي للإفطار</div>
+<div class="countdown" id="countdown"></div>
 
 <div class="calendar">
   <h3>أيام شهر رمضان</h3>
   <div class="days" id="ramadanDays"></div>
 </div>
-
-<button class="save-btn">حفظ صورة اليوم</button>
 
 </div>
 
@@ -261,43 +262,84 @@ function toggleMenu(){
   document.getElementById("sidebar").classList.toggle("active");
 }
 
-const ramadanStart = new Date(2026,1,18);
-const daysNames = ["الأحد","الإثنين","الثلاثاء","الأربعاء","الخميس","الجمعة","السبت"];
-const duas = Array(30).fill("اللهم تقبّل صيامي وقيامي، واجعلني من المقبولين.");
+/* أوقات حسب المحافظة */
+const timesByCity={
+  basra:{imsak:"04:55",fajr:"05:05",sunrise:"06:20",dhuhr:"12:05",asr:"15:20",maghrib:"18:05"},
+  baghdad:{imsak:"05:00",fajr:"05:10",sunrise:"06:25",dhuhr:"12:10",asr:"15:25",maghrib:"18:10"},
+  najaf:{imsak:"05:02",fajr:"05:12",sunrise:"06:27",dhuhr:"12:12",asr:"15:27",maghrib:"18:12"},
+  karbala:{imsak:"05:01",fajr:"05:11",sunrise:"06:26",dhuhr:"12:11",asr:"15:26",maghrib:"18:11"},
+  dhiqar:{imsak:"04:53",fajr:"05:03",sunrise:"06:18",dhuhr:"12:03",asr:"15:18",maghrib:"18:03"},
+  maysan:{imsak:"04:52",fajr:"05:02",sunrise:"06:17",dhuhr:"12:02",asr:"15:17",maghrib:"18:02"}
+};
 
-const daysContainer=document.getElementById("ramadanDays");
+let maghribTime=null;
+
+function updateTimes(){
+  const city=document.getElementById("citySelect").value;
+  const t=timesByCity[city];
+
+  imsak.innerText=t.imsak;
+  fajr.innerText=t.fajr;
+  sunrise.innerText=t.sunrise;
+  dhuhr.innerText=t.dhuhr;
+  asr.innerText=t.asr;
+  maghrib.innerText=t.maghrib;
+
+  const now=new Date();
+  const [h,m]=t.maghrib.split(":");
+  maghribTime=new Date(now.getFullYear(),now.getMonth(),now.getDate(),h,m,0);
+}
+updateTimes();
+
+/* عداد الإفطار */
+setInterval(()=>{
+  if(!maghribTime)return;
+  const now=new Date();
+  let diff=maghribTime-now;
+  if(diff<=0){
+    countdown.innerText="🌙 حان وقت الإفطار";
+    return;
+  }
+  const h=Math.floor(diff/3600000);
+  const m=Math.floor((diff%3600000)/60000);
+  const s=Math.floor((diff%60000)/1000);
+  countdown.innerText=`الوقت المتبقي للإفطار: ${h}:${m}:${s}`;
+},1000);
+
+/* الروزنامة */
+const ramadanStart=new Date(2026,1,18);
+const daysNames=["الأحد","الإثنين","الثلاثاء","الأربعاء","الخميس","الجمعة","السبت"];
+const duas=Array(30).fill("اللهم تقبّل صيامي وقيامي واجعلني من المقبولين.");
+const daysBox=document.getElementById("ramadanDays");
 const todayBox=document.getElementById("todayBox");
 
 function renderDays(){
   const today=new Date();
   const diff=Math.floor((today-ramadanStart)/86400000)+1;
-
   for(let i=1;i<=30;i++){
-    const btn=document.createElement("button");
-    btn.textContent=i;
-    if(i===diff) btn.classList.add("active");
-    btn.onclick=()=>selectDay(i,btn);
-    daysContainer.appendChild(btn);
+    const b=document.createElement("button");
+    b.textContent=i;
+    if(i===diff)b.classList.add("active");
+    b.onclick=()=>selectDay(i,b);
+    daysBox.appendChild(b);
   }
-  selectDay(diff>0?diff:1);
+  selectDay(diff>0&&diff<=30?diff:1);
 }
 
 function selectDay(day,btn){
-  document.querySelectorAll(".days button").forEach(b=>b.classList.remove("active"));
-  if(btn) btn.classList.add("active");
-
+  document.querySelectorAll(".days button").forEach(x=>x.classList.remove("active"));
+  if(btn)btn.classList.add("active");
   todayBox.classList.remove("show");
   setTimeout(()=>{
-    const date=new Date(ramadanStart);
-    date.setDate(ramadanStart.getDate()+day-1);
+    const d=new Date(ramadanStart);
+    d.setDate(ramadanStart.getDate()+day-1);
     todayBox.innerHTML=
-      `اليوم: ${daysNames[date.getDay()]} – ${day} رمضان<br>
-       الموافق: ${date.toLocaleDateString('ar-IQ')}<br><br>
+      `اليوم: ${daysNames[d.getDay()]} – ${day} رمضان<br>
+       الموافق: ${d.toLocaleDateString('ar-IQ')}<br><br>
        دعاء اليوم:<br>${duas[day-1]}`;
     todayBox.classList.add("show");
   },200);
 }
-
 renderDays();
 </script>
 
