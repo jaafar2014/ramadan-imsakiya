@@ -9,10 +9,11 @@
 
 <style>
 *{box-sizing:border-box}
+
 body{
   margin:0;
   font-family:'Cairo',sans-serif;
-  background:radial-gradient(circle at top,#1a1a1a,#000);
+  background:radial-gradient(circle at top,#1c1c1c,#000);
   color:#fff;
 }
 
@@ -21,6 +22,7 @@ body{
   margin:auto;
   padding:20px;
   position:relative;
+  z-index:1;
 }
 
 /* زر القائمة */
@@ -30,6 +32,7 @@ body{
   left:20px;
   font-size:26px;
   cursor:pointer;
+  z-index:1100;
 }
 
 /* القائمة الجانبية */
@@ -45,19 +48,48 @@ body{
   z-index:1000;
 }
 .sidebar.active{left:0}
-.sidebar h3{color:#f0b36a}
-.sidebar label{display:block;margin-top:15px}
 
-/* صورة */
+.sidebar h3{
+  color:#f0b36a;
+  margin-bottom:20px;
+}
+
+.sidebar label{
+  display:block;
+  margin-bottom:15px;
+}
+
+.sidebar select{
+  width:100%;
+  padding:8px;
+  border-radius:8px;
+  border:none;
+}
+
+/* overlay */
+.overlay{
+  position:fixed;
+  top:0;
+  left:0;
+  width:100%;
+  height:100%;
+  background:rgba(0,0,0,.6);
+  z-index:900;
+  display:none;
+}
+
+/* الصورة */
 .profile{
   width:160px;
   height:160px;
   border-radius:50%;
-  margin:40px auto 15px;
+  margin:50px auto 15px;
   background:linear-gradient(135deg,#f6c177,#f4a261);
   display:flex;
   align-items:center;
   justify-content:center;
+  position:relative;
+  z-index:1;
 }
 .profile img{
   width:140px;
@@ -68,15 +100,18 @@ body{
 
 /* النص */
 .center{text-align:center}
+
 .name{
   color:#f0b36a;
   font-size:22px;
   font-weight:900;
 }
+
 .prayer{
   font-size:14px;
   opacity:.9;
   margin-top:10px;
+  line-height:1.7;
 }
 
 /* اليوم */
@@ -88,18 +123,20 @@ body{
   text-align:center;
 }
 
-/* أوقات */
+/* الأوقات */
 .times{
   display:grid;
   grid-template-columns:repeat(3,1fr);
   gap:12px;
 }
+
 .time-box{
   background:#111;
   padding:12px;
   border-radius:12px;
   text-align:center;
 }
+
 .time-box span{
   display:block;
   margin-top:5px;
@@ -107,7 +144,7 @@ body{
   font-weight:700;
 }
 
-/* عداد */
+/* العداد */
 .countdown{
   margin-top:20px;
   background:linear-gradient(135deg,#f6c177,#f4a261);
@@ -117,26 +154,32 @@ body{
   font-weight:900;
   text-align:center;
 }
-
-/* منع الاختفاء */
-.hidden{display:none}
 </style>
 </head>
 
 <body>
 
+<!-- overlay -->
+<div class="overlay" id="overlay" onclick="closeMenu()"></div>
+
+<!-- القائمة -->
 <div class="sidebar" id="sidebar">
   <h3>الإعدادات</h3>
-  <label>المحافظة
+
+  <label>
+    المحافظة
     <select>
       <option>البصرة</option>
       <option>بغداد</option>
       <option>النجف</option>
       <option>كربلاء</option>
+      <option>ذي قار</option>
+      <option>واسط</option>
     </select>
   </label>
 
-  <label>المذهب
+  <label>
+    المذهب
     <select>
       <option>الوقف الشيعي</option>
       <option>الوقف السني</option>
@@ -144,7 +187,7 @@ body{
   </label>
 </div>
 
-<div class="container" id="content">
+<div class="container">
 
 <div class="menu-btn" onclick="toggleMenu()">☰</div>
 
@@ -155,8 +198,10 @@ body{
 <div class="center">
   <div>الفاتحة على روح الشهيد</div>
   <div class="name">أمان عبدالجبار عبدالرضا</div>
+
   <div class="prayer">
-    اللهم اغفر له وارحمه واعفُ عنه، وأسكنه فسيح جناتك
+    اللهم اغفر له وارحمه، واعفُ عنه، وأسكنه فسيح جناتك،
+    واجعل قبره روضةً من رياض الجنة.
   </div>
 </div>
 
@@ -182,28 +227,41 @@ body{
 
 <script>
 function toggleMenu(){
-  document.getElementById("sidebar").classList.toggle("active");
+  const sidebar = document.getElementById("sidebar");
+  const overlay = document.getElementById("overlay");
+
+  sidebar.classList.toggle("active");
+
+  if(sidebar.classList.contains("active")){
+    overlay.style.display="block";
+  }else{
+    overlay.style.display="none";
+  }
+}
+
+function closeMenu(){
+  document.getElementById("sidebar").classList.remove("active");
+  document.getElementById("overlay").style.display="none";
 }
 
 /* عداد الإفطار */
 function updateCountdown(){
-  const now=new Date();
-  const iftar=new Date();
+  const now = new Date();
+  const iftar = new Date();
   iftar.setHours(17,54,0);
-  let diff=iftar-now;
-  if(diff<0) diff=0;
-  const h=Math.floor(diff/3600000);
-  const m=Math.floor((diff%3600000)/60000);
-  const s=Math.floor((diff%60000)/1000);
-  document.getElementById("countdown").innerText=
+
+  let diff = iftar - now;
+  if(diff < 0) diff = 0;
+
+  const h = Math.floor(diff / 3600000);
+  const m = Math.floor((diff % 3600000) / 60000);
+  const s = Math.floor((diff % 60000) / 1000);
+
+  document.getElementById("countdown").innerText =
     `الوقت المتبقي للإفطار: ${h}:${m}:${s}`;
 }
-setInterval(updateCountdown,1000);
 
-/* حماية من اختفاء الصفحة */
-window.onload=()=>{
-  document.getElementById("content").style.display="block";
-};
+setInterval(updateCountdown,1000);
 </script>
 
 </body>
