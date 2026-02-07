@@ -37,10 +37,7 @@ body{
   transition:0.4s;
   z-index:1200;
 }
-
-.sidebar.active{
-  right:0;
-}
+.sidebar.active{ right:0; }
 
 .sidebar h3{
   color:#f0b36d;
@@ -127,7 +124,6 @@ body{
   transform:translateY(10px);
   transition:0.4s;
 }
-
 .today.show{
   opacity:1;
   transform:translateY(0);
@@ -205,14 +201,16 @@ body{
   <div class="close-btn" onclick="toggleMenu()">✕</div>
   <h3>الإعدادات</h3>
 
-  <select id="citySelect" onchange="updateTimes()">
+  <!-- المحافظة -->
+  <select id="citySelect" onchange="updateRegions()">
     <option value="basra">البصرة</option>
     <option value="baghdad">بغداد</option>
     <option value="najaf">النجف</option>
     <option value="karbala">كربلاء</option>
-    <option value="dhiqar">ذي قار</option>
-    <option value="maysan">ميسان</option>
   </select>
+
+  <!-- المنطقة -->
+  <select id="regionSelect" onchange="updateTimes()"></select>
 
   <select>
     <option>الوقف الشيعي</option>
@@ -262,21 +260,43 @@ function toggleMenu(){
   document.getElementById("sidebar").classList.toggle("active");
 }
 
-/* أوقات حسب المحافظة */
-const timesByCity={
-  basra:{imsak:"04:55",fajr:"05:05",sunrise:"06:20",dhuhr:"12:05",asr:"15:20",maghrib:"18:05"},
-  baghdad:{imsak:"05:00",fajr:"05:10",sunrise:"06:25",dhuhr:"12:10",asr:"15:25",maghrib:"18:10"},
-  najaf:{imsak:"05:02",fajr:"05:12",sunrise:"06:27",dhuhr:"12:12",asr:"15:27",maghrib:"18:12"},
-  karbala:{imsak:"05:01",fajr:"05:11",sunrise:"06:26",dhuhr:"12:11",asr:"15:26",maghrib:"18:11"},
-  dhiqar:{imsak:"04:53",fajr:"05:03",sunrise:"06:18",dhuhr:"12:03",asr:"15:18",maghrib:"18:03"},
-  maysan:{imsak:"04:52",fajr:"05:02",sunrise:"06:17",dhuhr:"12:02",asr:"15:17",maghrib:"18:02"}
+/* ===== المحافظات + المناطق + الأوقات ===== */
+const timeTable = {
+  basra:{
+    center:{imsak:"04:55",fajr:"05:05",sunrise:"06:20",dhuhr:"12:05",asr:"15:20",maghrib:"18:05"},
+    qurna:{imsak:"04:57",fajr:"05:07",sunrise:"06:22",dhuhr:"12:07",asr:"15:22",maghrib:"18:07"}
+  },
+  baghdad:{
+    karkh:{imsak:"05:00",fajr:"05:10",sunrise:"06:25",dhuhr:"12:10",asr:"15:25",maghrib:"18:10"},
+    rusafa:{imsak:"05:01",fajr:"05:11",sunrise:"06:26",dhuhr:"12:11",asr:"15:26",maghrib:"18:11"}
+  },
+  najaf:{
+    center:{imsak:"05:02",fajr:"05:12",sunrise:"06:27",dhuhr:"12:12",asr:"15:27",maghrib:"18:12"}
+  },
+  karbala:{
+    center:{imsak:"05:01",fajr:"05:11",sunrise:"06:26",dhuhr:"12:11",asr:"15:26",maghrib:"18:11"}
+  }
 };
 
 let maghribTime=null;
 
+function updateRegions(){
+  const city=document.getElementById("citySelect").value;
+  const regionSelect=document.getElementById("regionSelect");
+  regionSelect.innerHTML="";
+  for(const region in timeTable[city]){
+    const opt=document.createElement("option");
+    opt.value=region;
+    opt.textContent=region;
+    regionSelect.appendChild(opt);
+  }
+  updateTimes();
+}
+
 function updateTimes(){
   const city=document.getElementById("citySelect").value;
-  const t=timesByCity[city];
+  const region=document.getElementById("regionSelect").value;
+  const t=timeTable[city][region];
 
   imsak.innerText=t.imsak;
   fajr.innerText=t.fajr;
@@ -289,9 +309,10 @@ function updateTimes(){
   const [h,m]=t.maghrib.split(":");
   maghribTime=new Date(now.getFullYear(),now.getMonth(),now.getDate(),h,m,0);
 }
-updateTimes();
 
-/* عداد الإفطار */
+updateRegions();
+
+/* ===== عداد الإفطار ===== */
 setInterval(()=>{
   if(!maghribTime)return;
   const now=new Date();
@@ -306,7 +327,7 @@ setInterval(()=>{
   countdown.innerText=`الوقت المتبقي للإفطار: ${h}:${m}:${s}`;
 },1000);
 
-/* الروزنامة */
+/* ===== الروزنامة ===== */
 const ramadanStart=new Date(2026,1,18);
 const daysNames=["الأحد","الإثنين","الثلاثاء","الأربعاء","الخميس","الجمعة","السبت"];
 const duas=Array(30).fill("اللهم تقبّل صيامي وقيامي واجعلني من المقبولين.");
