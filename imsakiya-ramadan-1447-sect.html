@@ -6,6 +6,7 @@
 <title>إمساكية رمضان الذكية</title>
 
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
 
 <style>
 body{
@@ -16,7 +17,7 @@ body{
   overflow-x:hidden;
 }
 
-/* ===== القائمة الجانبية ===== */
+/* زر القائمة */
 .menu-btn{
   position:fixed;
   top:15px;
@@ -26,6 +27,7 @@ body{
   z-index:1100;
 }
 
+/* القائمة الجانبية */
 .sidebar{
   position:fixed;
   top:0;
@@ -37,16 +39,8 @@ body{
   transition:0.4s;
   z-index:1200;
 }
-
-.sidebar.active{
-  right:0;
-}
-
-.sidebar h3{
-  color:#f0b36d;
-  margin-bottom:15px;
-}
-
+.sidebar.active{ right:0; }
+.sidebar h3{ color:#f0b36d; margin-bottom:15px; }
 .sidebar select{
   width:100%;
   margin-bottom:15px;
@@ -55,15 +49,13 @@ body{
   border:none;
   font-family:'Cairo';
 }
-
 .close-btn{
   font-size:20px;
   cursor:pointer;
-  text-align:left;
   margin-bottom:10px;
 }
 
-/* ===== المحتوى ===== */
+/* المحتوى */
 .container{
   max-width:430px;
   margin:auto;
@@ -83,7 +75,6 @@ body{
   border:6px solid #f0b36d;
   overflow:hidden;
 }
-
 .avatar img{
   width:100%;
   height:100%;
@@ -104,7 +95,6 @@ body{
   color:#ddd;
 }
 
-/* ===== بطاقة اليوم مع أنميشن ===== */
 .today{
   margin:20px 0;
   padding:15px;
@@ -115,7 +105,6 @@ body{
   transform:translateY(10px);
   transition:0.4s;
 }
-
 .today.show{
   opacity:1;
   transform:translateY(0);
@@ -133,7 +122,6 @@ body{
   border-radius:12px;
   text-align:center;
 }
-
 .time-box span{
   display:block;
   color:#f0b36d;
@@ -154,7 +142,6 @@ body{
 .calendar{
   margin-top:30px;
 }
-
 .calendar h3{
   text-align:center;
   color:#f0b36d;
@@ -176,7 +163,6 @@ body{
   cursor:pointer;
   font-family:'Cairo';
 }
-
 .days button.active{
   background:#f0b36d;
   color:#000;
@@ -199,14 +185,11 @@ body{
 
 <body>
 
-<!-- زر القائمة -->
 <div class="menu-btn" onclick="toggleMenu()">☰</div>
 
-<!-- القائمة الجانبية -->
 <div class="sidebar" id="sidebar">
   <div class="close-btn" onclick="toggleMenu()">✕</div>
   <h3>الإعدادات</h3>
-
   <select>
     <option>البصرة</option>
     <option>بغداد</option>
@@ -215,7 +198,6 @@ body{
     <option>ذي قار</option>
     <option>ميسان</option>
   </select>
-
   <select>
     <option>الوقف الشيعي</option>
     <option>الوقف السني</option>
@@ -245,14 +227,14 @@ body{
   <div class="time-box">المغرب<span>17:54</span></div>
 </div>
 
-<div class="countdown">الوقت المتبقي للإفطار</div>
+<div class="countdown" id="countdown">الوقت المتبقي للإفطار</div>
 
 <div class="calendar">
   <h3>أيام شهر رمضان</h3>
   <div class="days" id="ramadanDays"></div>
 </div>
 
-<button class="save-btn">حفظ صورة اليوم</button>
+<button class="save-btn" onclick="saveImage()">حفظ صورة اليوم</button>
 
 </div>
 
@@ -263,7 +245,39 @@ function toggleMenu(){
 
 const ramadanStart = new Date(2026,1,18);
 const daysNames = ["الأحد","الإثنين","الثلاثاء","الأربعاء","الخميس","الجمعة","السبت"];
-const duas = Array(30).fill("اللهم تقبّل صيامي وقيامي، واجعلني من المقبولين.");
+
+const duas = [
+"اللهم اجعل صيامي فيه صيام الصائمين.",
+"اللهم قرّبني فيه إلى مرضاتك.",
+"اللهم ارزقني فيه الذهن والتنبيه.",
+"اللهم طهّرني فيه من الأدناس.",
+"اللهم لا تخذلني فيه لتعرض معصيتك.",
+"اللهم وفقني فيه لطاعتك.",
+"اللهم أعنّي فيه على صيامه وقيامه.",
+"اللهم ارزقني فيه رحمة الأيتام.",
+"اللهم وسّع عليّ فيه رزقي.",
+"اللهم اجعلني فيه من المتوكلين.",
+"اللهم حبّب إليّ فيه الإحسان.",
+"اللهم زيّني فيه بالستر والعفاف.",
+"اللهم طهّرني فيه من الدنس.",
+"اللهم ارزقني فيه فضل ليلة القدر.",
+"اللهم ارزقني فيه القبول.",
+"اللهم وفّقني فيه لموافقة الأبرار.",
+"اللهم دلّني فيه على صالح الأعمال.",
+"اللهم اجعلني فيه من المقبولين.",
+"اللهم افتح لي فيه أبواب رحمتك.",
+"اللهم قوّني فيه على إقامة أمرك.",
+"اللهم ارزقني فيه طاعة الخاشعين.",
+"اللهم ارزقني فيه فضل قيام الليل.",
+"اللهم اجعلني فيه من المستغفرين.",
+"اللهم طهّر قلبي من الرياء.",
+"اللهم اجعلني فيه من الشاكرين.",
+"اللهم وفّقني فيه لطاعتك.",
+"اللهم اجعل عملي فيه مقبولًا.",
+"اللهم ارزقني فيه الإخلاص.",
+"اللهم اختم لي فيه بالقبول.",
+"اللهم تقبّل مني هذا الشهر."
+];
 
 const daysContainer=document.getElementById("ramadanDays");
 const todayBox=document.getElementById("todayBox");
@@ -279,7 +293,7 @@ function renderDays(){
     btn.onclick=()=>selectDay(i,btn);
     daysContainer.appendChild(btn);
   }
-  selectDay(diff>0?diff:1);
+  selectDay(diff>0 && diff<=30 ? diff : 1);
 }
 
 function selectDay(day,btn){
@@ -291,11 +305,20 @@ function selectDay(day,btn){
     const date=new Date(ramadanStart);
     date.setDate(ramadanStart.getDate()+day-1);
     todayBox.innerHTML=
-      `اليوم: ${daysNames[date.getDay()]} – ${day} رمضان<br>
+      `اليوم: ${daysNames[date.getDay()]} – ${day} رمضان 1447 هـ<br>
        الموافق: ${date.toLocaleDateString('ar-IQ')}<br><br>
        دعاء اليوم:<br>${duas[day-1]}`;
     todayBox.classList.add("show");
   },200);
+}
+
+function saveImage(){
+  html2canvas(document.getElementById("capture")).then(canvas=>{
+    const link=document.createElement("a");
+    link.download="imsakiya-day.png";
+    link.href=canvas.toDataURL();
+    link.click();
+  });
 }
 
 renderDays();
