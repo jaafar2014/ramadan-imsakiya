@@ -21,7 +21,6 @@ body{
   padding:20px;
 }
 
-/* القائمة */
 .menu-btn{
   position:fixed;
   top:15px;
@@ -31,37 +30,6 @@ body{
   z-index:1001;
 }
 
-.sidebar{
-  position:fixed;
-  top:0;
-  right:-100%;
-  width:80%;
-  height:100%;
-  background:#111;
-  padding:20px;
-  transition:.3s;
-  z-index:1000;
-}
-
-.sidebar.active{
-  right:0;
-}
-
-.sidebar h2{
-  text-align:center;
-  color:#f0b36d;
-}
-
-.sidebar select{
-  width:100%;
-  padding:10px;
-  margin:10px 0;
-  border-radius:8px;
-  border:none;
-  font-family:'Cairo';
-}
-
-/* البروفايل */
 .profile{
   text-align:center;
   margin-top:40px;
@@ -96,7 +64,6 @@ body{
   color:#ddd;
 }
 
-/* اليوم */
 .today{
   margin:20px 0;
   padding:15px;
@@ -105,7 +72,6 @@ body{
   text-align:center;
 }
 
-/* أوقات الصلاة */
 .times{
   display:grid;
   grid-template-columns:repeat(3,1fr);
@@ -126,7 +92,6 @@ body{
   margin-top:6px;
 }
 
-/* عداد الإفطار */
 .countdown{
   margin-top:20px;
   background:linear-gradient(135deg,#f0b36d,#f7c58c);
@@ -137,7 +102,6 @@ body{
   font-weight:700;
 }
 
-/* الروزنامة */
 .calendar{
   margin-top:30px;
 }
@@ -164,111 +128,138 @@ body{
   font-family:'Cairo';
 }
 
-.days button:hover{
+.days button.today-btn{
   background:#f0b36d;
   color:#000;
+  font-weight:700;
+}
+
+.save-btn{
+  margin-top:15px;
+  width:100%;
+  padding:12px;
+  border:none;
+  border-radius:14px;
+  background:#f0b36d;
+  font-family:'Cairo';
+  font-weight:700;
+  cursor:pointer;
 }
 </style>
 </head>
 
 <body>
 
-<div class="menu-btn" onclick="toggleMenu()">☰</div>
+<div class="container" id="capture">
 
-<div class="sidebar" id="sidebar">
-  <h2>الإعدادات</h2>
-  <label>المحافظة</label>
-  <select>
-    <option>البصرة</option>
-    <option>بغداد</option>
-    <option>النجف</option>
-    <option>كربلاء</option>
-  </select>
-
-  <label>المذهب</label>
-  <select>
-    <option>الوقف الشيعي</option>
-    <option>الوقف السني</option>
-  </select>
-
-  <button onclick="toggleMenu()" style="margin-top:20px;width:100%;padding:10px;border:none;border-radius:10px;">إغلاق</button>
+<div class="profile">
+  <div class="avatar">
+    <img src="IMG_20260206_214353.jpg">
+  </div>
+  <div class="name">أمان عبدالجبار عبدالرِضا</div>
+  <div class="dua">
+    اللهم اغفر له وارحمه واعفُ عنه، وأسكنه فسيح جناتك.
+  </div>
 </div>
 
-<div class="container">
+<div class="today" id="todayBox"></div>
 
-  <div class="profile">
-    <div class="avatar">
-      <img src="IMG_20260206_214353.jpg" alt="">
-    </div>
-    <div class="name">أمان عبدالجبار عبدالرِضا</div>
-    <div class="dua">
-      اللهم اغفر له وارحمه واعفُ عنه، وأَسكنه فسيح جناتك.
-    </div>
-  </div>
+<div class="times">
+  <div class="time-box">الإمساك<span>05:05</span></div>
+  <div class="time-box">الفجر<span>05:15</span></div>
+  <div class="time-box">الشروق<span>06:27</span></div>
+  <div class="time-box">الظهر<span>12:03</span></div>
+  <div class="time-box">العصر<span>15:13</span></div>
+  <div class="time-box">المغرب<span>17:54</span></div>
+</div>
 
-  <div class="today" id="todayBox">
-    اليوم: الإثنين – 1 رمضان 1447 هـ<br>
-    الموافق: 18 / 2 / 2026
-  </div>
+<div class="countdown" id="countdown"></div>
 
-  <div class="times">
-    <div class="time-box">الإمساك<span>05:05</span></div>
-    <div class="time-box">الفجر<span>05:15</span></div>
-    <div class="time-box">الشروق<span>06:27</span></div>
-    <div class="time-box">الظهر<span>12:03</span></div>
-    <div class="time-box">العصر<span>15:13</span></div>
-    <div class="time-box">المغرب<span>17:54</span></div>
-    <div class="time-box">العشاء<span>18:41</span></div>
-  </div>
+<div class="calendar">
+  <h3>أيام شهر رمضان</h3>
+  <div class="days" id="ramadanDays"></div>
+</div>
 
-  <div class="countdown" id="countdown">
-    الوقت المتبقي للإفطار: 00:00:00
-  </div>
-
-  <div class="calendar">
-    <h3>أيام شهر رمضان</h3>
-    <div class="days" id="ramadanDays"></div>
-  </div>
+<button class="save-btn" onclick="saveImage()">حفظ صورة اليوم</button>
 
 </div>
+
+<script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
 
 <script>
-/* القائمة */
-function toggleMenu(){
-  document.getElementById("sidebar").classList.toggle("active");
-}
+const ramadanStart = new Date(2026,1,18);
+const daysNames = ["الأحد","الإثنين","الثلاثاء","الأربعاء","الخميس","الجمعة","السبت"];
 
-/* توليد أيام رمضان */
+const duas = [
+"اللهم اجعل صيامي فيه صيام الصائمين",
+"اللهم قرّبني فيه إلى مرضاتك",
+"اللهم ارزقني فيه رحمة الأيتام",
+"اللهم قوني فيه على إقامة أمرك",
+"اللهم اجعلني فيه من المستغفرين",
+"اللهم لا تخذلني فيه لتعرض معصيتك",
+"اللهم أعني فيه على صيامه وقيامه",
+"اللهم ارزقني فيه ذهنًا صافياً",
+"اللهم اجعلني فيه من المتوكلين",
+"اللهم اجعلني فيه من الفائزين",
+"اللهم حبب إليّ فيه الإحسان",
+"اللهم زينّي فيه بالستر والعفاف",
+"اللهم طهّرني فيه من الدنس",
+"اللهم لا تؤاخذني فيه بالعثرات",
+"اللهم ارزقني فيه خشوع المخبتين",
+"اللهم وفّقني فيه لموافقة الأبرار",
+"اللهم اهدني فيه لصالح الأعمال",
+"اللهم نوّر فيه قلبي بضياءه",
+"اللهم وفّقني فيه لقراءة القرآن",
+"اللهم اجعلني فيه من المقبولين",
+"اللهم ارزقني فيه سكينة القلب",
+"اللهم لا تردني فيه خائبًا",
+"اللهم اجعلني فيه من الشاكرين",
+"اللهم ارزقني فيه حسن الخاتمة",
+"اللهم تقبّل صيامي وقيامي",
+"اللهم لا تحرمني فيه رحمتك",
+"اللهم اجعلني فيه من الفائزين",
+"اللهم اختم لي فيه بالرضوان",
+"اللهم تقبّل مني القليل",
+"اللهم اجعل عملي فيه مقبولاً"
+];
+
 const daysContainer = document.getElementById("ramadanDays");
-for(let i=1;i<=30;i++){
-  const btn=document.createElement("button");
-  btn.textContent=i;
-  btn.onclick=()=>selectDay(i);
-  daysContainer.appendChild(btn);
+const todayBox = document.getElementById("todayBox");
+
+function renderDays(){
+  daysContainer.innerHTML="";
+  const today=new Date();
+  const diff=Math.floor((today-ramadanStart)/86400000)+1;
+
+  for(let i=1;i<=30;i++){
+    const btn=document.createElement("button");
+    btn.textContent=i;
+    if(i===diff) btn.classList.add("today-btn");
+    btn.onclick=()=>selectDay(i);
+    daysContainer.appendChild(btn);
+  }
+  selectDay(diff>0 && diff<=30 ? diff : 1);
 }
 
-/* عند اختيار يوم */
 function selectDay(day){
-  document.getElementById("todayBox").innerHTML=
-    `اليوم: ${day} رمضان 1447 هـ<br>الموافق: 2026`;
+  const date=new Date(ramadanStart);
+  date.setDate(ramadanStart.getDate()+day-1);
+  todayBox.innerHTML=
+    `اليوم: ${daysNames[date.getDay()]} – ${day} رمضان 1447 هـ<br>
+     الموافق: ${date.toLocaleDateString('ar-IQ')}<br><br>
+     دعاء اليوم:<br>${duas[day-1]}`;
 }
 
-/* عداد الإفطار (تجريبي) */
-function updateCountdown(){
-  const now=new Date();
-  const iftar=new Date();
-  iftar.setHours(17,54,0);
-  let diff=iftar-now;
-  if(diff<0) diff=0;
-
-  const h=String(Math.floor(diff/3600000)).padStart(2,'0');
-  const m=String(Math.floor(diff%3600000/60000)).padStart(2,'0');
-  const s=String(Math.floor(diff%60000/1000)).padStart(2,'0');
-
-  document.getElementById("countdown").innerText=
-    `الوقت المتبقي للإفطار: ${h}:${m}:${s}`;
+function saveImage(){
+  html2canvas(document.getElementById("capture")).then(canvas=>{
+    const a=document.createElement("a");
+    a.href=canvas.toDataURL("image/png");
+    a.download="ramadan_day.png";
+    a.click();
+  });
 }
-setInterval(updateCountdown,1000);
+
+renderDays();
 </script>
 
 </body>
