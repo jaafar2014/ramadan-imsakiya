@@ -3,114 +3,207 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>إمساكية رمضان الذكية</title>
-
-<link rel="manifest" href="manifest.json">
-<meta name="theme-color" content="#2b1d4f">
+<title>إمساكية رمضان الذكية 1447هـ</title>
 
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap" rel="stylesheet">
 
-<script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
-
 <style>
-:root{
-  --bg1:#2b1d4f;
-  --bg2:#1a1233;
-  --card:#20173f;
-  --accent:#f5c16c;
-}
-body.dark{
-  --bg1:#111;
-  --bg2:#000;
-  --card:#1c1c1c;
-  --accent:#cfa34a;
-}
+*{box-sizing:border-box}
 body{
   margin:0;
   font-family:'Cairo',sans-serif;
-  background:linear-gradient(180deg,var(--bg1),var(--bg2));
+  background:radial-gradient(circle at top,#1a1a1a,#000);
   color:#fff;
 }
-.app{max-width:430px;margin:auto;padding:20px}
 
-/* نفس تنسيق المراحل السابقة (مختصر هنا) */
-.menu{font-size:26px;cursor:pointer}
-.profile{width:140px;height:140px;border-radius:50%;background:linear-gradient(135deg,var(--accent),#ff9f6e);padding:5px;margin:20px auto}
-.profile img{width:100%;height:100%;border-radius:50%;object-fit:cover}
-.memorial{text-align:center}
-.memorial .name{color:var(--accent);font-size:20px;font-weight:900}
-.memorial .dua{font-size:13px;opacity:.85;margin-top:6px;line-height:1.6}
+.container{
+  max-width:430px;
+  margin:auto;
+  padding:20px;
+  position:relative;
+}
 
-/* drawer */
-.drawer{position:fixed;top:0;right:-100%;width:80%;height:100%;background:#3b2b6b;padding:20px;transition:.3s;z-index:999}
-.drawer.active{right:0}
-.drawer button{width:100%;padding:12px;border:none;border-radius:12px;margin:6px 0;font-family:'Cairo'}
-.overlay{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.5);display:none;z-index:900}
-.overlay.show{display:block}
+/* زر القائمة */
+.menu-btn{
+  position:absolute;
+  top:20px;
+  left:20px;
+  font-size:26px;
+  cursor:pointer;
+}
+
+/* القائمة الجانبية */
+.sidebar{
+  position:fixed;
+  top:0;
+  left:-260px;
+  width:260px;
+  height:100%;
+  background:#111;
+  padding:20px;
+  transition:.3s;
+  z-index:1000;
+}
+.sidebar.active{left:0}
+.sidebar h3{color:#f0b36a}
+.sidebar label{display:block;margin-top:15px}
+
+/* صورة */
+.profile{
+  width:160px;
+  height:160px;
+  border-radius:50%;
+  margin:40px auto 15px;
+  background:linear-gradient(135deg,#f6c177,#f4a261);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+.profile img{
+  width:140px;
+  height:140px;
+  border-radius:50%;
+  object-fit:cover;
+}
+
+/* النص */
+.center{text-align:center}
+.name{
+  color:#f0b36a;
+  font-size:22px;
+  font-weight:900;
+}
+.prayer{
+  font-size:14px;
+  opacity:.9;
+  margin-top:10px;
+}
+
+/* اليوم */
+.day-box{
+  background:#111;
+  padding:12px;
+  border-radius:12px;
+  margin:20px 0;
+  text-align:center;
+}
+
+/* أوقات */
+.times{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:12px;
+}
+.time-box{
+  background:#111;
+  padding:12px;
+  border-radius:12px;
+  text-align:center;
+}
+.time-box span{
+  display:block;
+  margin-top:5px;
+  color:#f0b36a;
+  font-weight:700;
+}
+
+/* عداد */
+.countdown{
+  margin-top:20px;
+  background:linear-gradient(135deg,#f6c177,#f4a261);
+  color:#000;
+  padding:14px;
+  border-radius:14px;
+  font-weight:900;
+  text-align:center;
+}
+
+/* منع الاختفاء */
+.hidden{display:none}
 </style>
 </head>
 
 <body>
 
-<div class="overlay" id="overlay" onclick="toggleDrawer()"></div>
-
-<div class="drawer" id="drawer">
+<div class="sidebar" id="sidebar">
   <h3>الإعدادات</h3>
-  <button onclick="saveImage()">📸 حفظ صورة اليوم</button>
-  <button onclick="toggleTheme()">🌙 تغيير الوضع</button>
+  <label>المحافظة
+    <select>
+      <option>البصرة</option>
+      <option>بغداد</option>
+      <option>النجف</option>
+      <option>كربلاء</option>
+    </select>
+  </label>
+
+  <label>المذهب
+    <select>
+      <option>الوقف الشيعي</option>
+      <option>الوقف السني</option>
+    </select>
+  </label>
 </div>
 
-<div class="app" id="captureArea">
+<div class="container" id="content">
 
-  <div class="menu" onclick="toggleDrawer()">☰</div>
+<div class="menu-btn" onclick="toggleMenu()">☰</div>
 
-  <div class="profile">
-    <img src="photo.jpg">
+<div class="profile">
+  <!-- ضع الصورة هنا لاحقًا -->
+</div>
+
+<div class="center">
+  <div>الفاتحة على روح الشهيد</div>
+  <div class="name">أمان عبدالجبار عبدالرضا</div>
+  <div class="prayer">
+    اللهم اغفر له وارحمه واعفُ عنه، وأسكنه فسيح جناتك
   </div>
+</div>
 
-  <div class="memorial">
-    <div>الفاتحة على روح الشهيد</div>
-    <div class="name">أمان عبدالجبار عبدالرضا</div>
-    <div class="dua">
-      اللهم اغفر له وارحمه، وعافه واعفُ عنه،  
-      وأكرم نزله، ووسّع مدخله،  
-      واغسله بالماء والثلج والبرد،  
-      ونقّه من الخطايا كما نقيت الثوب الأبيض من الدنس،  
-      وأسكنه فسيح جناتك،  
-      واجعل قبره روضة من رياض الجنة.
-    </div>
-  </div>
+<div class="day-box">
+  اليوم: الاثنين – 1 رمضان 1447هـ<br>
+  الموافق: 18 / 2 / 2026
+</div>
+
+<div class="times">
+  <div class="time-box">الإمساك<span>05:05</span></div>
+  <div class="time-box">الفجر<span>05:15</span></div>
+  <div class="time-box">الشروق<span>06:27</span></div>
+  <div class="time-box">الظهر<span>12:03</span></div>
+  <div class="time-box">العصر<span>15:13</span></div>
+  <div class="time-box">المغرب<span>17:54</span></div>
+</div>
+
+<div class="countdown" id="countdown">
+  الوقت المتبقي للإفطار: --:--:--
+</div>
 
 </div>
 
 <script>
-/* drawer */
-function toggleDrawer(){
-  drawer.classList.toggle("active");
-  overlay.classList.toggle("show");
+function toggleMenu(){
+  document.getElementById("sidebar").classList.toggle("active");
 }
 
-/* theme */
-function toggleTheme(){
-  document.body.classList.toggle("dark");
-  localStorage.setItem("theme",document.body.classList.contains("dark"));
+/* عداد الإفطار */
+function updateCountdown(){
+  const now=new Date();
+  const iftar=new Date();
+  iftar.setHours(17,54,0);
+  let diff=iftar-now;
+  if(diff<0) diff=0;
+  const h=Math.floor(diff/3600000);
+  const m=Math.floor((diff%3600000)/60000);
+  const s=Math.floor((diff%60000)/1000);
+  document.getElementById("countdown").innerText=
+    `الوقت المتبقي للإفطار: ${h}:${m}:${s}`;
 }
-if(localStorage.getItem("theme")==="true")document.body.classList.add("dark");
+setInterval(updateCountdown,1000);
 
-/* save image */
-function saveImage(){
-  html2canvas(document.getElementById("captureArea")).then(canvas=>{
-    const a=document.createElement("a");
-    a.href=canvas.toDataURL();
-    a.download="imsakiya.png";
-    a.click();
-  });
-}
-
-/* PWA */
-if("serviceWorker"in navigator){
-  navigator.serviceWorker.register("service-worker.js");
-}
+/* حماية من اختفاء الصفحة */
+window.onload=()=>{
+  document.getElementById("content").style.display="block";
+};
 </script>
 
 </body>
