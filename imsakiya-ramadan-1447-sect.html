@@ -259,7 +259,98 @@ body{
 function toggleMenu(){
   document.getElementById("sidebar").classList.toggle("active");
 }
+<script>
+/* ===== المحافظات + المناطق (عربي) ===== */
+const regionsByCity = {
+  basra: ["مركز البصرة","الزبير","القرنة","المدينة","الفاو"],
+  baghdad: ["الكرخ","الرصافة"],
+  najaf: ["مركز النجف","الكوفة"],
+  karbala: ["مركز كربلاء","الهندية"],
+  dhiqar: ["الناصرية","الشطرة"],
+  maysan: ["العمارة","المجر الكبير"],
+  wasit: ["الكوت","النعمانية"],
+  babel: ["الحلة","المسيب"],
+  diwaniya: ["الديوانية","عفك"],
+  muthanna: ["السماوة","الرميثة"]
+};
 
+/* إحداثيات تقريبية لكل محافظة */
+const cityCoords = {
+  basra:{lat:30.5085,lon:47.7804},
+  baghdad:{lat:33.3152,lon:44.3661},
+  najaf:{lat:31.9996,lon:44.3260},
+  karbala:{lat:32.6160,lon:44.0249},
+  dhiqar:{lat:31.0500,lon:46.2667},
+  maysan:{lat:31.8359,lon:47.1511},
+  wasit:{lat:32.5128,lon:45.8182},
+  babel:{lat:32.4721,lon:44.4317},
+  diwaniya:{lat:31.9892,lon:44.9255},
+  muthanna:{lat:31.3093,lon:45.2806}
+};
+
+let maghribTime=null;
+
+/* تحديث المناطق */
+function updateRegions(){
+  const city = citySelect.value;
+  regionSelect.innerHTML="";
+  regionsByCity[city].forEach(r=>{
+    const opt=document.createElement("option");
+    opt.textContent=r;
+    regionSelect.appendChild(opt);
+  });
+  fetchPrayerTimes();
+}
+
+/* جلب الأوقات من API */
+async function fetchPrayerTimes(){
+  const city = citySelect.value;
+  const {lat,lon} = cityCoords[city];
+
+  const res = await fetch(
+    `https://api.aladhan.com/v1/timings?latitude=${lat}&longitude=${lon}&method=4`
+  );
+  const data = await res.json();
+  const t = data.data.timings;
+
+  imsak.innerText = t.Imsak;
+  fajr.innerText = t.Fajr;
+  sunrise.innerText = t.Sunrise;
+  dhuhr.innerText = t.Dhuhr;
+  asr.innerText = t.Asr;
+  maghrib.innerText = t.Maghrib;
+
+  const [h,m] = t.Maghrib.split(":");
+  const now = new Date();
+  maghribTime = new Date(
+    now.getFullYear(),
+    now.getMonth(),
+    now.getDate(),
+    h,m,0
+  );
+}
+
+/* عدّاد الإفطار الحقيقي */
+setInterval(()=>{
+  if(!maghribTime)return;
+  const now=new Date();
+  let diff=maghribTime-now;
+
+  if(diff<=0){
+    countdown.innerText="🌙 حان وقت الإفطار";
+    return;
+  }
+
+  const mins=Math.floor(diff/60000);
+  const secs=Math.floor((diff%60000)/1000);
+
+  countdown.innerText =
+    `الوقت المتبقي للإفطار: ${mins} دقيقة و ${secs} ثانية`;
+},1000);
+
+/* تشغيل أولي */
+updateRegions();
+</script>
 /* ===== المحافظات + المناطق + الأوقات ===== */
 const timeTable = {
   basra:{
