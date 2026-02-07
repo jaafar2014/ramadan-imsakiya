@@ -3,234 +3,211 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>إمساكية رمضان الذكية 1447هـ</title>
+<title>إمساكية رمضان الذكية</title>
 
-<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
 
 <style>
-*{box-sizing:border-box}
 body{
   margin:0;
   font-family:'Cairo',sans-serif;
-  background:radial-gradient(circle at top,#1c1c1c,#000);
+  background:#0b0b0b;
   color:#fff;
 }
 
-/* layout */
 .container{
   max-width:430px;
   margin:auto;
   padding:20px;
-  position:relative;
-  z-index:1;
 }
 
-/* menu */
+/* القائمة */
 .menu-btn{
-  position:absolute;
-  top:20px;
-  left:20px;
+  position:fixed;
+  top:15px;
+  right:15px;
   font-size:26px;
   cursor:pointer;
-  z-index:1200;
+  z-index:1001;
 }
 
-/* sidebar */
 .sidebar{
   position:fixed;
   top:0;
-  left:-260px;
-  width:260px;
+  right:-100%;
+  width:80%;
   height:100%;
   background:#111;
   padding:20px;
   transition:.3s;
-  z-index:1100;
-}
-.sidebar.active{left:0}
-.sidebar h3{color:#f0b36a}
-.sidebar label{display:block;margin:15px 0}
-.sidebar select{
-  width:100%;
-  padding:8px;
-  border-radius:8px;
-  border:none;
-}
-
-/* overlay */
-.overlay{
-  position:fixed;
-  top:0;
-  left:0;
-  width:100%;
-  height:100%;
-  background:rgba(0,0,0,.6);
-  display:none;
   z-index:1000;
 }
 
-/* profile */
+.sidebar.active{
+  right:0;
+}
+
+.sidebar h2{
+  text-align:center;
+  color:#f0b36d;
+}
+
+.sidebar select{
+  width:100%;
+  padding:10px;
+  margin:10px 0;
+  border-radius:8px;
+  border:none;
+  font-family:'Cairo';
+}
+
+/* البروفايل */
 .profile{
+  text-align:center;
+  margin-top:40px;
+}
+
+.avatar{
   width:160px;
   height:160px;
+  margin:auto;
   border-radius:50%;
-  margin:50px auto 15px;
-  background:linear-gradient(135deg,#f6c177,#f4a261);
-  display:flex;
-  align-items:center;
-  justify-content:center;
+  border:6px solid #f0b36d;
+  overflow:hidden;
 }
-.profile img{
-  width:140px;
-  height:140px;
-  border-radius:50%;
+
+.avatar img{
+  width:100%;
+  height:100%;
   object-fit:cover;
 }
 
-.center{text-align:center}
 .name{
-  color:#f0b36a;
+  margin-top:15px;
   font-size:22px;
-  font-weight:900;
-}
-.prayer{
-  font-size:14px;
-  opacity:.9;
-  line-height:1.7;
-  margin-top:10px;
+  color:#f0b36d;
+  font-weight:700;
 }
 
-/* day box */
-.day-box{
-  background:#111;
-  padding:12px;
-  border-radius:12px;
+.dua{
+  margin-top:10px;
+  font-size:14px;
+  line-height:1.8;
+  color:#ddd;
+}
+
+/* اليوم */
+.today{
   margin:20px 0;
+  padding:15px;
+  background:#151515;
+  border-radius:14px;
   text-align:center;
 }
 
-/* times */
+/* أوقات الصلاة */
 .times{
   display:grid;
   grid-template-columns:repeat(3,1fr);
   gap:10px;
 }
+
 .time-box{
-  background:#111;
-  padding:10px;
+  background:#151515;
+  padding:12px;
   border-radius:12px;
   text-align:center;
 }
+
 .time-box span{
   display:block;
-  margin-top:5px;
-  color:#f0b36a;
+  color:#f0b36d;
+  font-weight:700;
+  margin-top:6px;
+}
+
+/* عداد الإفطار */
+.countdown{
+  margin-top:20px;
+  background:linear-gradient(135deg,#f0b36d,#f7c58c);
+  color:#000;
+  padding:15px;
+  border-radius:18px;
+  text-align:center;
   font-weight:700;
 }
 
-/* countdown */
-.countdown{
-  margin-top:15px;
-  background:linear-gradient(135deg,#f6c177,#f4a261);
-  color:#000;
-  padding:14px;
-  border-radius:14px;
-  font-weight:900;
-  text-align:center;
+/* الروزنامة */
+.calendar{
+  margin-top:30px;
 }
 
-/* calendar */
-.calendar{margin-top:25px}
 .calendar h3{
   text-align:center;
-  color:#f0b36a;
+  color:#f0b36d;
 }
+
 .days{
   display:grid;
-  grid-template-columns:repeat(5,1fr);
+  grid-template-columns:repeat(6,1fr);
   gap:8px;
+  margin-top:15px;
 }
+
 .days button{
-  background:#111;
+  background:#151515;
   color:#fff;
   border:none;
   padding:10px;
   border-radius:10px;
-  font-weight:700;
-}
-.days button:hover{
-  background:#f0b36a;
-  color:#000;
+  cursor:pointer;
+  font-family:'Cairo';
 }
 
-/* modal */
-.day-modal{
-  position:fixed;
-  top:0;
-  left:0;
-  width:100%;
-  height:100%;
-  background:rgba(0,0,0,.7);
-  display:none;
-  z-index:2000;
-}
-.day-content{
-  background:#111;
-  max-width:350px;
-  margin:80px auto;
-  padding:20px;
-  border-radius:16px;
-  text-align:center;
-}
-.day-content h3{color:#f0b36a}
-.close{
-  float:left;
-  cursor:pointer;
-  font-size:20px;
+.days button:hover{
+  background:#f0b36d;
+  color:#000;
 }
 </style>
 </head>
 
 <body>
 
-<div class="overlay" id="overlay" onclick="closeMenu()"></div>
+<div class="menu-btn" onclick="toggleMenu()">☰</div>
 
 <div class="sidebar" id="sidebar">
-  <h3>الإعدادات</h3>
-  <label>المحافظة
-    <select>
-      <option>البصرة</option>
-      <option>بغداد</option>
-      <option>النجف</option>
-      <option>كربلاء</option>
-    </select>
-  </label>
-  <label>المذهب
-    <select>
-      <option>الوقف الشيعي</option>
-      <option>الوقف السني</option>
-    </select>
-  </label>
+  <h2>الإعدادات</h2>
+  <label>المحافظة</label>
+  <select>
+    <option>البصرة</option>
+    <option>بغداد</option>
+    <option>النجف</option>
+    <option>كربلاء</option>
+  </select>
+
+  <label>المذهب</label>
+  <select>
+    <option>الوقف الشيعي</option>
+    <option>الوقف السني</option>
+  </select>
+
+  <button onclick="toggleMenu()" style="margin-top:20px;width:100%;padding:10px;border:none;border-radius:10px;">إغلاق</button>
 </div>
 
 <div class="container">
-  <div class="menu-btn" onclick="toggleMenu()">☰</div>
 
   <div class="profile">
-    <img src="IMG_20260206_214353.jpg">
-  </div>
-
-  <div class="center">
-    <div>الفاتحة على روح الشهيد</div>
-    <div class="name">أمان عبدالجبار عبدالرضا</div>
-    <div class="prayer">
-      اللهم اغفر له وارحمه واعفُ عنه، وأسكنه فسيح جناتك،
-      واجعل قبره روضةً من رياض الجنة.
+    <div class="avatar">
+      <img src="IMG_20260206_214353.jpg" alt="">
+    </div>
+    <div class="name">أمان عبدالجبار عبدالرِضا</div>
+    <div class="dua">
+      اللهم اغفر له وارحمه واعفُ عنه، وأَسكنه فسيح جناتك.
     </div>
   </div>
 
-  <div class="day-box">
-    اليوم: الاثنين – 1 رمضان 1447هـ<br>
+  <div class="today" id="todayBox">
+    اليوم: الإثنين – 1 رمضان 1447 هـ<br>
     الموافق: 18 / 2 / 2026
   </div>
 
@@ -241,62 +218,55 @@ body{
     <div class="time-box">الظهر<span>12:03</span></div>
     <div class="time-box">العصر<span>15:13</span></div>
     <div class="time-box">المغرب<span>17:54</span></div>
+    <div class="time-box">العشاء<span>18:41</span></div>
   </div>
 
-  <div class="countdown" id="countdown">الوقت المتبقي للإفطار: --:--:--</div>
+  <div class="countdown" id="countdown">
+    الوقت المتبقي للإفطار: 00:00:00
+  </div>
 
   <div class="calendar">
     <h3>أيام شهر رمضان</h3>
-    <div class="days">
-      <!-- الأيام -->
-      ${Array.from({length:30},(_,i)=>`<button onclick="openDay(${i+1})">${i+1}</button>`).join('')}
-    </div>
+    <div class="days" id="ramadanDays"></div>
   </div>
-</div>
 
-<div class="day-modal" id="dayModal">
-  <div class="day-content">
-    <span class="close" onclick="closeDay()">✕</span>
-    <h3 id="dayTitle"></h3>
-    <p id="dayDua"></p>
-  </div>
 </div>
 
 <script>
+/* القائمة */
 function toggleMenu(){
-  sidebar.classList.toggle("active");
-  overlay.style.display = sidebar.classList.contains("active")?"block":"none";
-}
-function closeMenu(){
-  sidebar.classList.remove("active");
-  overlay.style.display="none";
+  document.getElementById("sidebar").classList.toggle("active");
 }
 
-const duas=[
-  "اللهم ارزقني فيه طاعة الخاشعين.",
-  "اللهم قربني فيه إلى مرضاتك.",
-  "اللهم ارزقني فيه الذهن والتنبيه.",
-  "اللهم اجعلني فيه من المتوكلين.",
-  "اللهم اجعلني فيه من المستغفرين."
-];
-
-function openDay(d){
-  dayTitle.innerText = "اليوم "+d+" من رمضان";
-  dayDua.innerText = duas[(d-1)%duas.length];
-  dayModal.style.display="block";
+/* توليد أيام رمضان */
+const daysContainer = document.getElementById("ramadanDays");
+for(let i=1;i<=30;i++){
+  const btn=document.createElement("button");
+  btn.textContent=i;
+  btn.onclick=()=>selectDay(i);
+  daysContainer.appendChild(btn);
 }
-function closeDay(){dayModal.style.display="none";}
 
-/* countdown */
+/* عند اختيار يوم */
+function selectDay(day){
+  document.getElementById("todayBox").innerHTML=
+    `اليوم: ${day} رمضان 1447 هـ<br>الموافق: 2026`;
+}
+
+/* عداد الإفطار (تجريبي) */
 function updateCountdown(){
   const now=new Date();
   const iftar=new Date();
   iftar.setHours(17,54,0);
-  let diff=iftar-now;if(diff<0)diff=0;
-  const h=Math.floor(diff/3600000);
-  const m=Math.floor((diff%3600000)/60000);
-  const s=Math.floor((diff%60000)/1000);
-  countdown.innerText=`الوقت المتبقي للإفطار: ${h}:${m}:${s}`;
+  let diff=iftar-now;
+  if(diff<0) diff=0;
+
+  const h=String(Math.floor(diff/3600000)).padStart(2,'0');
+  const m=String(Math.floor(diff%3600000/60000)).padStart(2,'0');
+  const s=String(Math.floor(diff%60000/1000)).padStart(2,'0');
+
+  document.getElementById("countdown").innerText=
+    `الوقت المتبقي للإفطار: ${h}:${m}:${s}`;
 }
 setInterval(updateCountdown,1000);
 </script>
