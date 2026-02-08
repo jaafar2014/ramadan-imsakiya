@@ -5,15 +5,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>إمساكية رمضان الذكية</title>
 
-<!-- Google Analytics -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-H8LG40B74Q"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-  gtag('config', 'G-H8LG40B74Q');
-</script>
-
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
 
 <style>
@@ -211,6 +202,7 @@ body{
   <div class="close-btn" onclick="toggleMenu()">✕</div>
   <h3>الإعدادات</h3>
 
+  <!-- المحافظة -->
   <select id="citySelect" onchange="updateRegions()">
     <option value="basra">البصرة</option>
     <option value="baghdad">بغداد</option>
@@ -224,6 +216,7 @@ body{
     <option value="muthanna">المثنى</option>
   </select>
 
+  <!-- المنطقة -->
   <select id="regionSelect"></select>
 
   <select>
@@ -238,11 +231,11 @@ body{
   <div class="title-top">إمساكية رمضان الإلكترونية 2026م – 1447هـ</div>
 
   <div class="avatar">
-    <img src="صورة المتوفي">
+    <img src="IMG_20260206_214353.jpg">
   </div>
 
   <div class="memorial">الفاتحة على روح الشهيد</div>
-  <div class="name">اسم المتوفي</div>
+  <div class="name">أمان عبدالجبار عبدالرِضا</div>
 
   <div class="dua">
     اللهم اغفر له وارحمه واعفُ عنه، وأسكنه فسيح جناتك.
@@ -269,28 +262,9 @@ body{
 
 </div>
 
-<!-- صوت أذان النجف -->
-<audio id="adhanAudio" preload="auto">
-  <source src="adhan_najaf.mp3" type="audio/mpeg">
-</audio>
-
 <script>
 function toggleMenu(){
   document.getElementById("sidebar").classList.toggle("active");
-}
-
-/* طلب إذن الإشعارات */
-document.addEventListener("DOMContentLoaded",()=>{
-  if("Notification" in window){
-    Notification.requestPermission();
-  }
-});
-
-/* إشعار */
-function showNotification(title, body){
-  if(Notification.permission === "granted"){
-    new Notification(title,{ body: body });
-  }
 }
 
 /* المحافظات + المناطق */
@@ -307,6 +281,7 @@ const regionsByCity = {
   muthanna:["السماوة","الرميثة"]
 };
 
+/* إحداثيات المحافظات */
 const cityCoords={
   basra:{lat:30.5085,lon:47.7804},
   baghdad:{lat:33.3152,lon:44.3661},
@@ -321,8 +296,8 @@ const cityCoords={
 };
 
 let maghribTime=null;
-let lastAdhanPlayed={};
 
+/* تحديث المناطق */
 function updateRegions(){
   const city=citySelect.value;
   regionSelect.innerHTML="";
@@ -334,9 +309,11 @@ function updateRegions(){
   fetchPrayerTimes();
 }
 
+/* جلب الأوقات من API */
 async function fetchPrayerTimes(){
   const city=citySelect.value;
   const {lat,lon}=cityCoords[city];
+
   const res=await fetch(`https://api.aladhan.com/v1/timings?latitude=${lat}&longitude=${lon}&method=4`);
   const data=await res.json();
   const t=data.data.timings;
@@ -348,24 +325,9 @@ async function fetchPrayerTimes(){
   asr.innerText=t.Asr;
   maghrib.innerText=t.Maghrib;
 
-  setInterval(()=>checkAdhan(t),30000);
-
   const now=new Date();
   const [h,m]=t.Maghrib.split(":");
   maghribTime=new Date(now.getFullYear(),now.getMonth(),now.getDate(),h,m,0);
-}
-
-/* فحص الأذان */
-function checkAdhan(t){
-  const now=new Date();
-  const current=now.getHours().toString().padStart(2,"0")+":"+now.getMinutes().toString().padStart(2,"0");
-  ["Fajr","Dhuhr","Asr","Maghrib","Isha"].forEach(p=>{
-    if(t[p]===current && !lastAdhanPlayed[p]){
-      document.getElementById("adhanAudio").play();
-      showNotification("🕌 أذان "+p,"حان الآن وقت الصلاة");
-      lastAdhanPlayed[p]=true;
-    }
-  });
 }
 
 /* عداد الإفطار */
@@ -374,7 +336,7 @@ setInterval(()=>{
   const now=new Date();
   let diff=maghribTime-now;
   if(diff<=0){
-    countdown.innerText="🌙 رمضان كريم";
+    countdown.innerText="🌙 حان وقت الإفطار";
     return;
   }
   const mins=Math.floor(diff/60000);
