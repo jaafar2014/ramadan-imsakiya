@@ -267,12 +267,49 @@ setInterval(()=>{
   countdown.innerText=`الوقت المتبقي للإفطار: ${mins} دقيقة و ${secs} ثانية`;
 },1000);
 
-/* الروزنامة */
+/* ===== ربط الروزنامة مع API ===== */
+
 const daysBox=document.getElementById("ramadanDays");
-for(let i=1;i<=30;i++){
-  const b=document.createElement("button");
-  b.textContent=i;
-  daysBox.appendChild(b);
+
+function renderCalendar(){
+  daysBox.innerHTML="";
+  for(let i=1;i<=30;i++){
+    const btn=document.createElement("button");
+    btn.textContent=i;
+    btn.onclick=()=>highlightDay(i,btn);
+    daysBox.appendChild(btn);
+  }
+}
+
+function highlightDay(day,btn){
+  document.querySelectorAll(".days button").forEach(b=>b.classList.remove("active"));
+  btn.classList.add("active");
+}
+
+async function loadHijriToday(){
+
+  const today=new Date();
+  const d=today.getDate();
+  const m=today.getMonth()+1;
+  const y=today.getFullYear();
+
+  const res=await fetch(`https://api.aladhan.com/v1/gToH?date=${d}-${m}-${y}`);
+  const data=await res.json();
+
+  const hijri=data.data.hijri;
+
+  if(hijri.month.number===9){  // رمضان
+      const currentDay=parseInt(hijri.day);
+
+      const buttons=document.querySelectorAll(".days button");
+      if(buttons[currentDay-1]){
+        buttons[currentDay-1].classList.add("active");
+      }
+  }
+}
+
+renderCalendar();
+loadHijriToday();.appendChild(b);
 }
 
 fetchPrayerTimes();
