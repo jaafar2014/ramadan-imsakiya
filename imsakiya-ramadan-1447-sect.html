@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>إمساكية رمضان الذكية</title>
+
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
 
 <style>
@@ -12,7 +13,10 @@ body{
   font-family:'Cairo',sans-serif;
   background:#0b0b0b;
   color:#fff;
+  overflow-x:hidden;
 }
+
+/* زر القائمة */
 .menu-btn{
   position:fixed;
   top:15px;
@@ -21,6 +25,8 @@ body{
   cursor:pointer;
   z-index:1100;
 }
+
+/* القائمة */
 .sidebar{
   position:fixed;
   top:0;
@@ -33,42 +39,90 @@ body{
   z-index:1200;
 }
 .sidebar.active{ right:0; }
+
+.close-btn{
+  font-size:20px;
+  cursor:pointer;
+  margin-bottom:10px;
+}
+
 .sidebar select{
   width:100%;
   margin-bottom:15px;
   padding:10px;
   border-radius:8px;
   border:none;
+  font-family:'Cairo';
 }
+
+/* المحتوى */
 .container{
   max-width:430px;
   margin:auto;
   padding:20px;
 }
-.today{
-  margin:20px 0;
-  padding:15px;
-  background:#151515;
-  border-radius:14px;
+
+.profile{
   text-align:center;
+  margin-top:40px;
 }
+
+.avatar{
+  width:150px;
+  height:150px;
+  margin:auto;
+  border-radius:50%;
+  border:5px solid #f0b36d;
+  overflow:hidden;
+}
+
+.avatar img{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+}
+
+.memorial{
+  margin-top:10px;
+  font-size:15px;
+  color:#ccc;
+}
+
+.name{
+  font-size:22px;
+  color:#f0b36d;
+  font-weight:700;
+  margin-top:5px;
+}
+
+.dua{
+  margin-top:8px;
+  font-size:14px;
+  color:#ddd;
+  line-height:1.7;
+}
+
 .times{
+  margin-top:25px;
   display:grid;
   grid-template-columns:repeat(3,1fr);
   gap:10px;
 }
+
 .time-box{
   background:#151515;
   padding:12px;
   border-radius:12px;
   text-align:center;
 }
+
 .time-box span{
   display:block;
   color:#f0b36d;
   font-weight:700;
   margin-top:6px;
 }
+
 .countdown{
   margin-top:20px;
   background:#f0b36d;
@@ -78,19 +132,32 @@ body{
   text-align:center;
   font-weight:700;
 }
+
+.calendar{
+  margin-top:30px;
+}
+
+.calendar h3{
+  text-align:center;
+  color:#f0b36d;
+}
+
 .days{
   display:grid;
   grid-template-columns:repeat(6,1fr);
   gap:8px;
   margin-top:15px;
 }
+
 .days button{
   background:#151515;
   color:#fff;
   border:none;
   padding:10px;
   border-radius:10px;
+  cursor:pointer;
 }
+
 .days button.active{
   background:#f0b36d;
   color:#000;
@@ -103,7 +170,7 @@ body{
 <div class="menu-btn" onclick="toggleMenu()">☰</div>
 
 <div class="sidebar" id="sidebar">
-  <h3>الإعدادات</h3>
+  <div class="close-btn" onclick="toggleMenu()">✕ إغلاق</div>
 
   <select id="citySelect" onchange="fetchPrayerTimes()">
     <option value="basra">البصرة</option>
@@ -112,7 +179,7 @@ body{
     <option value="karbala">كربلاء</option>
   </select>
 
-  <select id="waqfSelect" onchange="calculateHijriDay()">
+  <select id="waqfSelect">
     <option>الوقف الشيعي</option>
     <option>الوقف السني</option>
   </select>
@@ -120,7 +187,16 @@ body{
 
 <div class="container">
 
-<div class="today" id="todayBox"></div>
+<div class="profile">
+  <div class="avatar">
+    <img src="IMG_20260206_214353.jpg">
+  </div>
+  <div class="memorial">الفاتحة على روح الشهيد</div>
+  <div class="name">أمان عبدالجبار عبدالرِضا</div>
+  <div class="dua">
+    اللهم اغفر له وارحمه واعفُ عنه، وأسكنه فسيح جناتك.
+  </div>
+</div>
 
 <div class="times">
   <div class="time-box">الإمساك<span id="imsak"></span></div>
@@ -133,8 +209,10 @@ body{
 
 <div class="countdown" id="countdown"></div>
 
-<h3 style="text-align:center;color:#f0b36d;">أيام شهر رمضان</h3>
-<div class="days" id="ramadanDays"></div>
+<div class="calendar">
+  <h3>أيام شهر رمضان</h3>
+  <div class="days" id="ramadanDays"></div>
+</div>
 
 </div>
 
@@ -144,7 +222,7 @@ function toggleMenu(){
   document.getElementById("sidebar").classList.toggle("active");
 }
 
-/* ===== إحداثيات المدن ===== */
+/* المدن */
 const cityCoords={
   basra:{lat:30.5085,lon:47.7804},
   baghdad:{lat:33.3152,lon:44.3661},
@@ -154,7 +232,7 @@ const cityCoords={
 
 let maghribTime=null;
 
-/* ===== جلب أوقات الصلاة ===== */
+/* جلب الأوقات */
 async function fetchPrayerTimes(){
   const city=document.getElementById("citySelect").value;
   const {lat,lon}=cityCoords[city];
@@ -175,9 +253,9 @@ async function fetchPrayerTimes(){
   maghribTime=new Date(now.getFullYear(),now.getMonth(),now.getDate(),h,m,0);
 }
 
-/* ===== عداد الإفطار ===== */
+/* عداد */
 setInterval(()=>{
-  if(!maghribTime) return;
+  if(!maghribTime)return;
   const now=new Date();
   const diff=maghribTime-now;
   if(diff<=0){
@@ -189,55 +267,14 @@ setInterval(()=>{
   countdown.innerText=`الوقت المتبقي للإفطار: ${mins} دقيقة و ${secs} ثانية`;
 },1000);
 
-/* ===== الروزنامة حسب المذهب ===== */
-
-const daysNames=["الأحد","الإثنين","الثلاثاء","الأربعاء","الخميس","الجمعة","السبت"];
+/* الروزنامة */
 const daysBox=document.getElementById("ramadanDays");
-const todayBox=document.getElementById("todayBox");
-
-function getRamadanStart(){
-  const waqf=document.getElementById("waqfSelect").value;
-  if(waqf.includes("السني")){
-    return new Date(2026,1,18);
-  }else{
-    return new Date(2026,1,19);
-  }
+for(let i=1;i<=30;i++){
+  const b=document.createElement("button");
+  b.textContent=i;
+  daysBox.appendChild(b);
 }
 
-function renderDays(){
-  daysBox.innerHTML="";
-  for(let i=1;i<=30;i++){
-    const b=document.createElement("button");
-    b.textContent=i;
-    b.onclick=()=>selectDay(i,b);
-    daysBox.appendChild(b);
-  }
-}
-
-function calculateHijriDay(){
-  const start=getRamadanStart();
-  const today=new Date();
-  const diff=Math.floor((today-start)/86400000)+1;
-  if(diff>=1 && diff<=30){
-    selectDay(diff);
-  }
-}
-
-function selectDay(day,btn){
-  document.querySelectorAll(".days button").forEach(x=>x.classList.remove("active"));
-  if(btn) btn.classList.add("active");
-
-  const start=getRamadanStart();
-  const selectedDate=new Date(start);
-  selectedDate.setDate(start.getDate()+(day-1));
-
-  todayBox.innerHTML=
-  `اليوم: ${daysNames[selectedDate.getDay()]} – ${day} رمضان 1447 هـ<br>
-   الموافق: ${selectedDate.toLocaleDateString('ar-IQ')}`;
-}
-
-renderDays();
-calculateHijriDay();
 fetchPrayerTimes();
 
 </script>
