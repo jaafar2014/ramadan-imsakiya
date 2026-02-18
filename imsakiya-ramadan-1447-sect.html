@@ -16,7 +16,6 @@ body{
   overflow-x:hidden;
 }
 
-/* القائمة الجانبية */
 .menu-btn{
   position:fixed;
   top:15px;
@@ -60,7 +59,6 @@ body{
   margin-bottom:10px;
 }
 
-/* المحتوى */
 .container{
   max-width:430px;
   margin:auto;
@@ -215,7 +213,7 @@ body{
 
   <select id="regionSelect"></select>
 
-  <select>
+  <select id="waqfSelect">
     <option>الوقف الشيعي</option>
     <option>الوقف السني</option>
   </select>
@@ -256,89 +254,26 @@ body{
 </div>
 
 <script>
+
 function toggleMenu(){
   document.getElementById("sidebar").classList.toggle("active");
 }
 
-/* المحافظات */
-const regionsByCity={
-  basra:["مركز البصرة"],
-  baghdad:["مركز بغداد"],
-  najaf:["مركز النجف"],
-  karbala:["مركز كربلاء"],
-  dhiqar:["الناصرية"],
-  maysan:["العمارة"],
-  wasit:["الكوت"],
-  babel:["الحلة"],
-  diwaniya:["الديوانية"],
-  muthanna:["السماوة"]
-};
+/* ===== الروزنامة حسب المذهب ===== */
 
-const cityCoords={
-  basra:{lat:30.5085,lon:47.7804},
-  baghdad:{lat:33.3152,lon:44.3661},
-  najaf:{lat:31.9996,lon:44.3260},
-  karbala:{lat:32.6160,lon:44.0249},
-  dhiqar:{lat:31.0500,lon:46.2667},
-  maysan:{lat:31.8359,lon:47.1511},
-  wasit:{lat:32.5128,lon:45.8182},
-  babel:{lat:32.4721,lon:44.4317},
-  diwaniya:{lat:31.9892,lon:44.9255},
-  muthanna:{lat:31.3093,lon:45.2806}
-};
-
-let maghribTime=null;
-
-function updateRegions(){
-  const city=citySelect.value;
-  regionSelect.innerHTML="";
-  regionsByCity[city].forEach(r=>{
-    const opt=document.createElement("option");
-    opt.textContent=r;
-    regionSelect.appendChild(opt);
-  });
-  fetchPrayerTimes();
-}
-
-async function fetchPrayerTimes(){
-  const city=citySelect.value;
-  const {lat,lon}=cityCoords[city];
-
-  const res=await fetch(`https://api.aladhan.com/v1/timings?latitude=${lat}&longitude=${lon}&method=4`);
-  const data=await res.json();
-  const t=data.data.timings;
-
-  imsak.innerText=t.Imsak;
-  fajr.innerText=t.Fajr;
-  sunrise.innerText=t.Sunrise;
-  dhuhr.innerText=t.Dhuhr;
-  asr.innerText=t.Asr;
-  maghrib.innerText=t.Maghrib;
-
-  const now=new Date();
-  const [h,m]=t.Maghrib.split(":");
-  maghribTime=new Date(now.getFullYear(),now.getMonth(),now.getDate(),h,m,0);
-}
-
-/* عداد الإفطار */
-setInterval(()=>{
-  if(!maghribTime)return;
-  const now=new Date();
-  let diff=maghribTime-now;
-  if(diff<=0){
-    countdown.innerText="🌙 حان وقت الإفطار";
-    return;
-  }
-  const mins=Math.floor(diff/60000);
-  const secs=Math.floor((diff%60000)/1000);
-  countdown.innerText=`الوقت المتبقي للإفطار: ${mins} دقيقة و ${secs} ثانية`;
-},1000);
-
-/* ===== الروزنامة مربوطة API ===== */
 const daysNames=["الأحد","الإثنين","الثلاثاء","الأربعاء","الخميس","الجمعة","السبت"];
 const duas=Array(30).fill("اللهم تقبّل صيامي وقيامي واجعلني من المقبولين.");
 const daysBox=document.getElementById("ramadanDays");
 const todayBox=document.getElementById("todayBox");
+
+function getRamadanStart(){
+  const waqf=document.getElementById("waqfSelect").value;
+  if(waqf.includes("السني")){
+    return new Date(2026,1,18);
+  }else{
+    return new Date(2026,1,19);
+  }
+}
 
 function renderDays(){
   daysBox.innerHTML="";
@@ -350,22 +285,13 @@ function renderDays(){
   }
 }
 
-async function loadHijriToday(){
+function calculateHijriDay(){
+  const start=getRamadanStart();
   const today=new Date();
-  const day=today.getDate();
-  const month=today.getMonth()+1;
-  const year=today.getFullYear();
-
-  const res=await fetch(`https://api.aladhan.com/v1/gToH?date=${day}-${month}-${year}`);
-  const data=await res.json();
-
-  const hijri=data.data.hijri;
-  const hijriDay=parseInt(hijri.day);
-  const hijriMonth=hijri.month.ar;
-
-  if(hijriMonth.includes("رمضان")){
-    highlightToday(hijriDay);
-    selectDay(hijriDay);
+  const diff=Math.floor((today-start)/86400000)+1;
+  if(diff>=1 && diff<=30){
+    highlightToday(diff);
+    selectDay(diff);
   }
 }
 
@@ -381,21 +307,27 @@ function selectDay(day,btn){
   document.querySelectorAll(".days button").forEach(x=>x.classList.remove("active"));
   if(btn)btn.classList.add("active");
 
-  const today=new Date();
+  const start=getRamadanStart();
+  const selectedDate=new Date(start);
+  selectedDate.setDate(start.getDate()+(day-1));
 
   todayBox.classList.remove("show");
   setTimeout(()=>{
     todayBox.innerHTML=
-      `اليوم: ${daysNames[today.getDay()]} – ${day} رمضان<br>
-       الموافق: ${today.toLocaleDateString('ar-IQ')}<br><br>
+      `اليوم: ${daysNames[selectedDate.getDay()]} – ${day} رمضان 1447 هـ<br>
+       الموافق: ${selectedDate.toLocaleDateString('ar-IQ')}<br><br>
        دعاء اليوم:<br>${duas[day-1]}`;
     todayBox.classList.add("show");
   },200);
 }
 
+document.getElementById("waqfSelect").addEventListener("change",()=>{
+  calculateHijriDay();
+});
+
 renderDays();
-loadHijriToday();
-updateRegions();
+calculateHijriDay();
+
 </script>
 
 </body>
