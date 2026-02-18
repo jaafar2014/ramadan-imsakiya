@@ -301,39 +301,67 @@ setInterval(()=>{
   const secs=Math.floor((diff%60000)/1000);  
   countdown.innerText=`الوقت المتبقي للإفطار: ${mins} دقيقة و ${secs} ثانية`;  
 },1000);  
-  
-/* ===== الروزنامة مربوطة API ===== */  
-const daysNames=["الأحد","الإثنين","الثلاثاء","الأربعاء","الخميس","الجمعة","السبت"];  
-const duas=Array(30).fill("اللهم تقبّل صيامي وقيامي واجعلني من المقبولين.");  
-const daysBox=document.getElementById("ramadanDays");  
-const todayBox=document.getElementById("todayBox");  
-  
-function renderDays(){  
-  daysBox.innerHTML="";  
-  for(let i=1;i<=30;i++){  
-    const b=document.createElement("button");  
-    b.textContent=i;  
-    b.onclick=()=>selectDay(i,b);  
-    daysBox.appendChild(b);  
-  }  
-}  
-  
-async function loadHijriToday(){  
-  const today=new Date();  
-  const day=today.getDate();  
-  const month=today.getMonth()+1;  
-  const year=today.getFullYear();  
-  
-  const res=await fetch(`https://api.aladhan.com/v1/gToH?date=${day}-${month}-${year}`);  
-  const data=await res.json();  
-  
-  const hijri=data.data.hijri;  
-  const hijriDay=parseInt(hijri.day);  
-  const hijriMonth=hijri.month.ar;  
-  
-  if(hijriMonth.includes("رمضان")){  
-    highlightToday(hijriDay);  
-    selectDay(hijriDay);  
+  /* ===== الروزنامة حسب المذهب الشيعي ===== */
+
+const daysNames=["الأحد","الإثنين","الثلاثاء","الأربعاء","الخميس","الجمعة","السبت"];
+const duas=Array(30).fill("اللهم تقبّل صيامي وقيامي واجعلني من المقبولين.");
+const daysBox=document.getElementById("ramadanDays");
+const todayBox=document.getElementById("todayBox");
+
+/* بداية رمضان حسب المذهب الشيعي */
+const ramadanStart=new Date(2026,1,19); // 19 فبراير 2026
+
+function renderDays(){
+  daysBox.innerHTML="";
+  for(let i=1;i<=30;i++){
+    const b=document.createElement("button");
+    b.textContent=i;
+    b.onclick=()=>selectDay(i,b);
+    daysBox.appendChild(b);
+  }
+}
+
+function calculateRamadanDay(){
+  const today=new Date();
+  const diff=Math.floor((today - ramadanStart)/86400000)+1;
+  return diff;
+}
+
+function highlightToday(day){
+  const buttons=document.querySelectorAll(".days button");
+  buttons.forEach(b=>b.classList.remove("active"));
+  if(day>=1 && day<=30){
+    buttons[day-1].classList.add("active");
+  }
+}
+
+function selectDay(day,btn){
+  document.querySelectorAll(".days button").forEach(x=>x.classList.remove("active"));
+  if(btn)btn.classList.add("active");
+
+  const selectedDate=new Date(ramadanStart);
+  selectedDate.setDate(ramadanStart.getDate()+day-1);
+
+  todayBox.classList.remove("show");
+  setTimeout(()=>{
+    todayBox.innerHTML=
+      `اليوم: ${daysNames[selectedDate.getDay()]} – ${day} رمضان 1447هـ<br>
+       الموافق: ${selectedDate.toLocaleDateString('ar-IQ')}<br><br>
+       دعاء اليوم:<br>${duas[day-1]}`;
+    todayBox.classList.add("show");
+  },200);
+}
+
+/* تشغيل */
+renderDays();
+
+const todayRamadan=calculateRamadanDay();
+if(todayRamadan>=1 && todayRamadan<=30){
+  highlightToday(todayRamadan);
+  selectDay(todayRamadan);
+}else{
+  selectDay(1);
+}
   }  
 }  
   
