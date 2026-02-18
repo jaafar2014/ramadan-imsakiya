@@ -113,7 +113,6 @@ body{
   color:#ddd;
 }
 
-/* بطاقة اليوم */
 .today{
   margin:20px 0;
   padding:15px;
@@ -159,7 +158,6 @@ body{
   font-weight:700;
 }
 
-/* الروزنامة */
 .calendar{
   margin-top:30px;
 }
@@ -227,14 +225,11 @@ body{
 
 <div class="profile">
   <div class="title-top">إمساكية رمضان الإلكترونية 2026م – 1447هـ</div>
-
   <div class="avatar">
     <img src="IMG_20260206_214353.jpg">
   </div>
-
   <div class="memorial">الفاتحة على روح الشهيد</div>
   <div class="name">أمان عبدالجبار عبدالرِضا</div>
-
   <div class="dua">
     اللهم اغفر له وارحمه واعفُ عنه، وأسكنه فسيح جناتك.
   </div>
@@ -260,41 +255,23 @@ body{
 
 </div>
 
-<!-- 🔊 أذان النجف -->
-<audio id="adhanAudio" preload="auto">
-  <source src="adhan_najaf.mp3" type="audio/mpeg">
-</audio>
-
 <script>
 function toggleMenu(){
   document.getElementById("sidebar").classList.toggle("active");
 }
 
-/* طلب إذن الإشعارات */
-document.addEventListener("DOMContentLoaded",()=>{
-  if("Notification" in window){
-    Notification.requestPermission();
-  }
-});
-
-function showNotification(title, body){
-  if(Notification.permission === "granted"){
-    new Notification(title,{ body });
-  }
-}
-
-/* المحافظات + المناطق */
+/* المحافظات */
 const regionsByCity={
-  basra:["مركز البصرة","الزبير","القرنة","المدينة","الفاو"],
-  baghdad:["الكرخ","الرصافة"],
-  najaf:["مركز النجف","الكوفة"],
-  karbala:["مركز كربلاء","الهندية"],
-  dhiqar:["الناصرية","الشطرة"],
-  maysan:["العمارة","المجر الكبير"],
-  wasit:["الكوت","النعمانية"],
-  babel:["الحلة","المسيب"],
-  diwaniya:["الديوانية","عفك"],
-  muthanna:["السماوة","الرميثة"]
+  basra:["مركز البصرة"],
+  baghdad:["مركز بغداد"],
+  najaf:["مركز النجف"],
+  karbala:["مركز كربلاء"],
+  dhiqar:["الناصرية"],
+  maysan:["العمارة"],
+  wasit:["الكوت"],
+  babel:["الحلة"],
+  diwaniya:["الديوانية"],
+  muthanna:["السماوة"]
 };
 
 const cityCoords={
@@ -311,7 +288,6 @@ const cityCoords={
 };
 
 let maghribTime=null;
-let adhanPlayed={};
 
 function updateRegions(){
   const city=citySelect.value;
@@ -327,6 +303,7 @@ function updateRegions(){
 async function fetchPrayerTimes(){
   const city=citySelect.value;
   const {lat,lon}=cityCoords[city];
+
   const res=await fetch(`https://api.aladhan.com/v1/timings?latitude=${lat}&longitude=${lon}&method=4`);
   const data=await res.json();
   const t=data.data.timings;
@@ -338,27 +315,9 @@ async function fetchPrayerTimes(){
   asr.innerText=t.Asr;
   maghrib.innerText=t.Maghrib;
 
-  checkAdhan(t);
-
   const now=new Date();
   const [h,m]=t.Maghrib.split(":");
   maghribTime=new Date(now.getFullYear(),now.getMonth(),now.getDate(),h,m,0);
-
-  setInterval(()=>checkAdhan(t),30000);
-}
-
-/* فحص الأذان */
-function checkAdhan(t){
-  const now=new Date();
-  const current=now.getHours().toString().padStart(2,"0")+":"+now.getMinutes().toString().padStart(2,"0");
-
-  ["Fajr","Dhuhr","Asr","Maghrib","Isha"].forEach(p=>{
-    if(t[p]===current && !adhanPlayed[p]){
-      document.getElementById("adhanAudio").play();
-      showNotification("🕌 أذان "+p,"حان الآن وقت الصلاة");
-      adhanPlayed[p]=true;
-    }
-  });
 }
 
 /* عداد الإفطار */
@@ -375,42 +334,67 @@ setInterval(()=>{
   countdown.innerText=`الوقت المتبقي للإفطار: ${mins} دقيقة و ${secs} ثانية`;
 },1000);
 
-/* الروزنامة */
-const ramadanStart=new Date(2026,1,18);
+/* ===== الروزنامة مربوطة API ===== */
 const daysNames=["الأحد","الإثنين","الثلاثاء","الأربعاء","الخميس","الجمعة","السبت"];
 const duas=Array(30).fill("اللهم تقبّل صيامي وقيامي واجعلني من المقبولين.");
 const daysBox=document.getElementById("ramadanDays");
 const todayBox=document.getElementById("todayBox");
 
 function renderDays(){
-  const today=new Date();
-  const diff=Math.floor((today-ramadanStart)/86400000)+1;
+  daysBox.innerHTML="";
   for(let i=1;i<=30;i++){
     const b=document.createElement("button");
     b.textContent=i;
-    if(i===diff)b.classList.add("active");
     b.onclick=()=>selectDay(i,b);
     daysBox.appendChild(b);
   }
-  selectDay(diff>0&&diff<=30?diff:1);
+}
+
+async function loadHijriToday(){
+  const today=new Date();
+  const day=today.getDate();
+  const month=today.getMonth()+1;
+  const year=today.getFullYear();
+
+  const res=await fetch(`https://api.aladhan.com/v1/gToH?date=${day}-${month}-${year}`);
+  const data=await res.json();
+
+  const hijri=data.data.hijri;
+  const hijriDay=parseInt(hijri.day);
+  const hijriMonth=hijri.month.ar;
+
+  if(hijriMonth.includes("رمضان")){
+    highlightToday(hijriDay);
+    selectDay(hijriDay);
+  }
+}
+
+function highlightToday(day){
+  const buttons=document.querySelectorAll(".days button");
+  buttons.forEach(b=>b.classList.remove("active"));
+  if(buttons[day-1]){
+    buttons[day-1].classList.add("active");
+  }
 }
 
 function selectDay(day,btn){
   document.querySelectorAll(".days button").forEach(x=>x.classList.remove("active"));
   if(btn)btn.classList.add("active");
+
+  const today=new Date();
+
   todayBox.classList.remove("show");
   setTimeout(()=>{
-    const d=new Date(ramadanStart);
-    d.setDate(ramadanStart.getDate()+day-1);
     todayBox.innerHTML=
-      `اليوم: ${daysNames[d.getDay()]} – ${day} رمضان<br>
-       الموافق: ${d.toLocaleDateString('ar-IQ')}<br><br>
+      `اليوم: ${daysNames[today.getDay()]} – ${day} رمضان<br>
+       الموافق: ${today.toLocaleDateString('ar-IQ')}<br><br>
        دعاء اليوم:<br>${duas[day-1]}`;
     todayBox.classList.add("show");
   },200);
 }
 
 renderDays();
+loadHijriToday();
 updateRegions();
 </script>
 
