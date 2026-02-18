@@ -4,35 +4,105 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>إمساكية رمضان الذكية</title>
+
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
 
 <style>
-body{margin:0;font-family:'Cairo',sans-serif;background:#0b0b0b;color:#fff;overflow-x:hidden;}
-.menu-btn{position:fixed;top:15px;right:15px;font-size:26px;cursor:pointer;z-index:1100;}
-.sidebar{position:fixed;top:0;right:-100%;width:260px;height:100%;background:#111;padding:20px;transition:.4s;z-index:1200;}
-.sidebar.active{right:0;}
-.sidebar h3{color:#f0b36d;margin-bottom:15px;}
-.sidebar select{width:100%;margin-bottom:15px;padding:10px;border-radius:8px;border:none;font-family:'Cairo';}
-.close-btn{font-size:20px;cursor:pointer;text-align:left;margin-bottom:10px;}
-.container{max-width:430px;margin:auto;padding:20px;}
-.profile{text-align:center;margin-top:20px;}
-.title-top{font-size:15px;color:#f0b36d;margin-bottom:10px;}
-.avatar{width:160px;height:160px;margin:auto;border-radius:50%;border:6px solid #f0b36d;overflow:hidden;}
-.avatar img{width:100%;height:100%;object-fit:cover;}
-.memorial{margin-top:12px;font-size:15px;color:#ddd;}
-.name{margin-top:6px;font-size:22px;color:#f0b36d;font-weight:700;}
-.dua{margin-top:10px;font-size:14px;line-height:1.8;color:#ddd;}
-.today{margin:20px 0;padding:15px;background:#151515;border-radius:14px;text-align:center;opacity:0;transform:translateY(10px);transition:.4s;}
-.today.show{opacity:1;transform:translateY(0);}
-.times{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;}
-.time-box{background:#151515;padding:12px;border-radius:12px;text-align:center;}
-.time-box span{display:block;color:#f0b36d;font-weight:700;margin-top:6px;}
-.countdown{margin-top:20px;background:linear-gradient(135deg,#f0b36d,#f7c58c);color:#000;padding:15px;border-radius:18px;text-align:center;font-weight:700;}
-.calendar{margin-top:30px;}
-.calendar h3{text-align:center;color:#f0b36d;}
-.days{display:grid;grid-template-columns:repeat(6,1fr);gap:8px;margin-top:15px;}
-.days button{background:#151515;color:#fff;border:none;padding:10px;border-radius:10px;cursor:pointer;font-family:'Cairo';}
-.days button.active{background:#f0b36d;color:#000;font-weight:700;}
+body{
+  margin:0;
+  font-family:'Cairo',sans-serif;
+  background:#0b0b0b;
+  color:#fff;
+  overflow-x:hidden;
+}
+.menu-btn{
+  position:fixed;
+  top:15px;
+  right:15px;
+  font-size:26px;
+  cursor:pointer;
+  z-index:1100;
+}
+.sidebar{
+  position:fixed;
+  top:0;
+  right:-100%;
+  width:260px;
+  height:100%;
+  background:#111;
+  padding:20px;
+  transition:0.4s;
+  z-index:1200;
+}
+.sidebar.active{ right:0; }
+.sidebar h3{ color:#f0b36d; margin-bottom:15px; }
+.sidebar select{
+  width:100%;
+  margin-bottom:15px;
+  padding:10px;
+  border-radius:8px;
+  border:none;
+  font-family:'Cairo';
+}
+.close-btn{ font-size:20px; cursor:pointer; margin-bottom:10px; }
+
+.container{ max-width:430px; margin:auto; padding:20px; }
+.profile{ text-align:center; margin-top:20px; }
+.title-top{ font-size:15px; color:#f0b36d; margin-bottom:10px; }
+.avatar{
+  width:160px;height:160px;margin:auto;
+  border-radius:50%;border:6px solid #f0b36d;
+  overflow:hidden;
+}
+.avatar img{ width:100%;height:100%;object-fit:cover; }
+.memorial{ margin-top:12px;font-size:15px;color:#ddd; }
+.name{ margin-top:6px;font-size:22px;color:#f0b36d;font-weight:700; }
+.dua{ margin-top:10px;font-size:14px;line-height:1.8;color:#ddd; }
+
+.today{
+  margin:20px 0;padding:15px;
+  background:#151515;border-radius:14px;
+  text-align:center;
+}
+
+.times{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:10px;
+}
+.time-box{
+  background:#151515;padding:12px;
+  border-radius:12px;text-align:center;
+}
+.time-box span{
+  display:block;color:#f0b36d;
+  font-weight:700;margin-top:6px;
+}
+.countdown{
+  margin-top:20px;
+  background:linear-gradient(135deg,#f0b36d,#f7c58c);
+  color:#000;padding:15px;
+  border-radius:18px;text-align:center;
+  font-weight:700;
+}
+
+.calendar{ margin-top:30px; }
+.calendar h3{ text-align:center;color:#f0b36d; }
+
+.days{
+  display:grid;
+  grid-template-columns:repeat(6,1fr);
+  gap:8px;margin-top:15px;
+}
+.days button{
+  background:#151515;color:#fff;
+  border:none;padding:10px;
+  border-radius:10px;cursor:pointer;
+  font-family:'Cairo';
+}
+.days button.active{
+  background:#f0b36d;color:#000;font-weight:700;
+}
 </style>
 </head>
 
@@ -44,24 +114,30 @@ body{margin:0;font-family:'Cairo',sans-serif;background:#0b0b0b;color:#fff;overf
   <div class="close-btn" onclick="toggleMenu()">✕</div>
   <h3>الإعدادات</h3>
 
-  <select id="citySelect" onchange="updateRegions()">
-    <option value="basra">البصرة</option>
-    <option value="baghdad">بغداد</option>
+  <select id="citySelect" onchange="initApp()">
     <option value="najaf">النجف</option>
-    <option value="karbala">كربلاء</option>
+    <option value="baghdad">بغداد</option>
+    <option value="basra">البصرة</option>
   </select>
 
-  <select id="regionSelect"></select>
+  <select id="madhabSelect" onchange="initApp()">
+    <option value="4">الوقف الشيعي</option>
+    <option value="2">الوقف السني</option>
+  </select>
 </div>
 
 <div class="container">
 
 <div class="profile">
   <div class="title-top">إمساكية رمضان الإلكترونية 2026م – 1447هـ</div>
-  <div class="avatar"><img src="IMG_20260206_214353.jpg"></div>
+  <div class="avatar">
+    <img src="IMG_20260206_214353.jpg">
+  </div>
   <div class="memorial">الفاتحة على روح الشهيد</div>
   <div class="name">أمان عبدالجبار عبدالرِضا</div>
-  <div class="dua">اللهم اغفر له وارحمه واعفُ عنه، وأسكنه فسيح جناتك.</div>
+  <div class="dua">
+    اللهم اغفر له وارحمه واعفُ عنه، وأسكنه فسيح جناتك.
+  </div>
 </div>
 
 <div class="today" id="todayBox"></div>
@@ -85,23 +161,72 @@ body{margin:0;font-family:'Cairo',sans-serif;background:#0b0b0b;color:#fff;overf
 </div>
 
 <script>
-function toggleMenu(){document.getElementById("sidebar").classList.toggle("active");}
 
-const cityCoords={
-  basra:{lat:30.5085,lon:47.7804},
-  baghdad:{lat:33.3152,lon:44.3661},
+function toggleMenu(){
+  document.getElementById("sidebar").classList.toggle("active");
+}
+
+const coords={
   najaf:{lat:31.9996,lon:44.3260},
-  karbala:{lat:32.6160,lon:44.0249}
+  baghdad:{lat:33.3152,lon:44.3661},
+  basra:{lat:30.5085,lon:47.7804}
 };
 
+let ramadanData=[];
 let maghribTime=null;
 
-async function fetchPrayerTimes(){
+async function initApp(){
   const city=citySelect.value;
-  const {lat,lon}=cityCoords[city];
-  const res=await fetch(`https://api.aladhan.com/v1/timings?latitude=${lat}&longitude=${lon}&method=4`);
+  const method=madhabSelect.value;
+  const {lat,lon}=coords[city];
+
+  const today=new Date();
+  const month=today.getMonth()+1;
+  const year=today.getFullYear();
+
+  const res=await fetch(`https://api.aladhan.com/v1/calendar?latitude=${lat}&longitude=${lon}&method=${method}&month=${month}&year=${year}`);
   const data=await res.json();
-  const t=data.data.timings;
+
+  ramadanData=data.data.filter(d=>d.date.hijri.month.number==9);
+
+  if(ramadanData.length===0)return;
+
+  renderDays();
+
+  const todayRamadan=ramadanData.findIndex(d=>d.date.gregorian.date===today.toISOString().split("T")[0]);
+
+  selectDay(todayRamadan>=0?todayRamadan:0);
+
+  updateTimes(ramadanData[todayRamadan>=0?todayRamadan:0]);
+}
+
+function renderDays(){
+  ramadanDays.innerHTML="";
+  ramadanData.forEach((d,i)=>{
+    const b=document.createElement("button");
+    b.textContent=d.date.hijri.day;
+    b.onclick=()=>selectDay(i);
+    ramadanDays.appendChild(b);
+  });
+}
+
+function selectDay(index){
+  document.querySelectorAll(".days button").forEach(x=>x.classList.remove("active"));
+  document.querySelectorAll(".days button")[index].classList.add("active");
+
+  const day=ramadanData[index];
+
+  todayBox.innerHTML=`
+  اليوم: ${day.date.gregorian.weekday.ar}<br>
+  ${day.date.hijri.day} رمضان ${day.date.hijri.year} هـ<br>
+  الموافق: ${day.date.gregorian.day} ${day.date.gregorian.month.ar} ${day.date.gregorian.year} م
+  `;
+
+  updateTimes(day);
+}
+
+function updateTimes(day){
+  const t=day.timings;
 
   imsak.innerText=t.Imsak;
   fajr.innerText=t.Fajr;
@@ -119,52 +244,17 @@ setInterval(()=>{
   if(!maghribTime)return;
   const now=new Date();
   let diff=maghribTime-now;
-  if(diff<=0){countdown.innerText="🌙 حان وقت الإفطار";return;}
+  if(diff<=0){
+    countdown.innerText="🌙 حان وقت الإفطار";
+    return;
+  }
   const mins=Math.floor(diff/60000);
   const secs=Math.floor((diff%60000)/1000);
   countdown.innerText=`الوقت المتبقي للإفطار: ${mins} دقيقة و ${secs} ثانية`;
 },1000);
 
-/* ===== الروزنامة الاحترافية API ===== */
+initApp();
 
-const daysBox=document.getElementById("ramadanDays");
-const todayBox=document.getElementById("todayBox");
-
-function renderDays(){
-  daysBox.innerHTML="";
-  for(let i=1;i<=30;i++){
-    const b=document.createElement("button");
-    b.textContent=i;
-    b.onclick=()=>selectDay(i,b);
-    daysBox.appendChild(b);
-  }
-}
-
-async function selectDay(day,btn){
-  document.querySelectorAll(".days button").forEach(x=>x.classList.remove("active"));
-  if(btn)btn.classList.add("active");
-
-  const year=new Date().getFullYear();
-  const res=await fetch(`https://api.aladhan.com/v1/hToG?date=${day}-9-${year}`);
-  const data=await res.json();
-
-  const g=data.data.gregorian;
-  const h=data.data.hijri;
-
-  todayBox.classList.remove("show");
-  setTimeout(()=>{
-    todayBox.innerHTML=
-    `اليوم: ${g.weekday.ar}<br>
-     ${h.day} ${h.month.ar} ${h.year} هـ<br>
-     الموافق: ${g.day} ${g.month.ar} ${g.year} م<br><br>
-     دعاء اليوم:<br>
-     اللهم تقبّل صيامي وقيامي واجعلني من المقبولين.`;
-    todayBox.classList.add("show");
-  },200);
-}
-
-renderDays();
-fetchPrayerTimes();
 </script>
 
 </body>
